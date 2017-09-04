@@ -9,4 +9,10 @@ module.exports = function(app) {
   app.get('/video', function(req, res) {
     res.render('pages/video');
   });
+  app.get('/submenu', function(req, res) {
+    res.render('pages/submenu');
+  });
+  app.get('/listadisciplinas', function(req, res) {
+    res.render('pages/listadisciplinas');
+  });
 };

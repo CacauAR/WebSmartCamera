@@ -6,9 +6,6 @@ module.exports = function(app) {
   app.get('/calendar', function(req, res) {
     res.render('pages/calendar');
   });
-  app.get('/gallery', function(req, res) {
-    res.render('pages/gallery');
-  });
   app.get('/', function(req, res) {
     res.render('pages/index');
   });

@@ -1,5 +1,8 @@
 'use strict';
+
+//res.render() will look in a views folder for the view
 module.exports = function(app) {
+
   app.get('/admintools', function(req, res) {
     res.render('pages/admintools');
   });
@@ -27,4 +30,5 @@ module.exports = function(app) {
   app.get('/video', function(req, res) {
     res.render('pages/video');
   });  
+  
 };

@@ -1,0 +1,47 @@
+<!-- views/pages/profile.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>	
+	<title>Bootstrap Metro Dashboard by Dennis Ji for ARM demo</title>
+	<% include ../partials/head %>			
+</head>
+
+<body>
+	<!-- start: Header -->
+	<div class="navbar">
+		<% include ../partials/navbar %>
+	</div>
+	<!-- start: Header -->
+
+	<div class="container">
+        <div class="page-header text-center">
+            <h1><span class="fa fa-anchor"></span> Profile Page</h1>
+            <a href="logout" class="btn btn-default btn-sm">Logout</a>
+        </div>
+            
+        <div class="row">
+        <!-- LOCAL INFORMATION -->
+            <div class="col-sm-6">
+                <div class="well">
+                    <h3><span class="fa fa-user"></span> Local</h3>
+                    <p>
+                        <strong>Id</strong><br>
+                        <strong>Username</strong><br>
+                        <strong>Encrypted password</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- start: Footer-->
+    <% include ../partials/footer %>
+    <!-- end: Footer-->
+        
+	<!-- start: JavaScript-->
+	<% include ../partials/scripts %>	
+	<!-- end: JavaScript-->
+	
+</body>
+</html>

@@ -1,8 +1,8 @@
 {
-  "name": "janux",
+  "name": "websmartcamera",
   "version": "1.0.0",
   "description": "Web Smart Camera Software",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

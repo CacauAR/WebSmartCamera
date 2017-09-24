@@ -1,334 +1,146 @@
 <!-- views/pages/home.ejs -->
-
 <!DOCTYPE html>
 <html lang="en">
-<head>	
+
+<head>
 	<title>Web Smart Camera Software</title>
-    <style type="text/css">
-    #canvas-video {
-      width: 640px;
-      height: 480px;
-      border: 1px solid #ccc;
-    }
+	<style type="text/css">
+		#canvas-video {
+			width: 640px;
+			height: 480px;
+			border: 1px solid #ccc;
+		}
 	</style>
-	<% include ../partials/head %>	
+	<% include ../partials/head %>
+		<script src="/socket.io/socket.io.js"></script><!--NAO MUDAR!!-->
+		<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+		<script>			
+			$(function () {		
+				var socket = io();		
+				$('form').submit(function () {
+					socket.emit('chat message', $('#mensagem').val());
+					/**Emit the message from user to
+					everybody*/
+					$('#mensagem').val('');
+					/**Clear the chat window */
+					return false;
+				});
+
+				socket.on('chat message', function (msg) {
+					var message_box = 
+						'<li class="left">' 
+							+ '<img class="avatar" alt="<%= user.username %>" src="/public/img/avatar.jpg">'
+							+ '<span class="message">'
+								+ '<span class="arrow"></span>'	
+								+ '<span class="from"><%= user.username %> </span>'
+								+ '<span class="time"> Jul 25, 2012 11:09</span>'					
+								+ '<span class="text">'
+									+ msg
+								+ '</span>'
+							+ '</span>'
+						+ '</li>';
+					$('#messages').append(message_box);
+					//$('#messages').append($('<li>').text(msg));
+				});
+				/**Instantiate message on chat*/
+			});
+		</script>
 </head>
 
 <body>
 	<!-- start: Header -->
 	<% include ../partials/navbar %>
-	<!-- end: Header -->
-	
+		<!-- end: Header -->
+
 		<div class="container-fluid-full">
-		<div class="row-fluid">
-				
-			<!-- start: Main Menu -->
-			<% include ../partials/sidebar_left %>
-			<!-- end: Main Menu -->
-			
-			<noscript>
-				<div class="alert alert-block span10">
-					<h4 class="alert-heading">Warning!</h4>
-					<p>You need to have <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a> enabled to use this site.</p>
-				</div>
-			</noscript>
-			
-			<!-- start: Content -->
-			<div id="content" class="span10">			
-			
-			<ul class="breadcrumb">
-				<li>
-					<i class="icon-home"></i>
-					<a href="index">Home</a> 
-					<i class="icon-angle-right"></i>
-				</li>
-				<li><a href="#">Video Chat</a></li>
-			</ul>
-
-			<div class="row-fluid">			
-                
-                <div class="col-xs-3">
-                    <a class="quick-button metro yellow span2">
-                        <i class="icon-group"></i>
-                        <p>Users</p>
-                        <span class="badge">237</span>
-                    </a>    
-                    
-                    <a class="quick-button metro red span2">
-                        <i class="icon-comments-alt"></i>
-                        <p>Comments</p>
-                        <span class="badge">46</span>
-				    </a>
-                </div>
-                    
-                <!--start: VIDEO KIM EDISON -->
-                <div class="span2">
-                    <canvas id="canvas-video" width="640" height="480"></canvas>
-                </div>  
-                <!--end: VIDEO KIM EDISON -->                       
-                
-                <div class="clearfix"></div>
-				
-			</div>		
-<br><br>
 			<div class="row-fluid">
-				
-				<div class="box black span4" onTablet="span6" onDesktop="span4">
-					<div class="box-header">
-						<h2><i class="halflings-icon white list"></i><span class="break"></span>Weekly Stat</h2>
-						<div class="box-icon">
-							<a href="#" class="btn-minimize"><i class="halflings-icon white chevron-up"></i></a>
-							<a href="#" class="btn-close"><i class="halflings-icon white remove"></i></a>
-						</div>
-					</div>
-					<div class="box-content">
-						<ul class="dashboard-list metro">
+
+				<!-- start: Main Menu -->
+				<% include ../partials/sidebar_left %>
+					<!-- end: Main Menu -->
+
+					<!-- start: Content -->
+					<div id="content" class="span10">
+						<ul class="breadcrumb">
 							<li>
-								<a href="#">
-									<i class="icon-arrow-up green"></i>                               
-									<strong>92</strong>
-									New Comments                                    
-								</a>
-							</li>
-						  <li>
-							<a href="#">
-							  <i class="icon-arrow-down red"></i>
-							  <strong>15</strong>
-							  New Registrations
-							</a>
-						  </li>
-						  <li>
-							<a href="#">
-							  <i class="icon-minus blue"></i>
-							  <strong>36</strong>
-							  New Articles                                    
-							</a>
-						  </li>
-						  <li>
-							<a href="#">
-							  <i class="icon-comment yellow"></i>
-							  <strong>45</strong>
-							  User reviews                                    
-							</a>
-						  </li>
-						  <li>
-							<a href="#">
-							  <i class="icon-arrow-up green"></i>                               
-							  <strong>112</strong>
-							  New Comments                                    
-							</a>
-						  </li>
-						  <li>
-							<a href="#">
-							  <i class="icon-arrow-down red"></i>
-							  <strong>31</strong>
-							  New Registrations
-							</a>
-						  </li>
-						  <li>
-							<a href="#">
-							  <i class="icon-minus blue"></i>
-							  <strong>93</strong>
-							  New Articles                                    
-							</a>
-						  </li>
-						  <li>
-							<a href="#">
-							  <i class="icon-comment yellow"></i>
-							  <strong>256</strong>
-							  User reviews                                    
-							</a>
-						  </li>
+								<i class="icon-home"></i>
+								<a href="index">Home</a>
+								<i class="icon-angle-right"></i> 
+								<li><a href="#">Video Chat</a></li>
 						</ul>
-					</div>
-				</div><!--/span-->
-				
-				<div class="box black span4" onTablet="span6" onDesktop="span4">
-					<div class="box-header">
-						<h2><i class="halflings-icon white user"></i><span class="break"></span>Last Users</h2>
-						<div class="box-icon">
-							<a href="#" class="btn-minimize"><i class="halflings-icon white chevron-up"></i></a>
-							<a href="#" class="btn-close"><i class="halflings-icon white remove"></i></a>
+
+						<div class="row-fluid">
+							<!--start: VIDEO KIM EDISON -->
+							<div class="box black span6 noMargin" onTablet="span6" 
+								onDesktop="span8">
+								<div class="box-header">
+									<h2><i class="halflings-icon white list"></i>
+									<span class="break"></span>Video Transmission</h2>
+								</div>
+								<div class="box-content">
+									<canvas id="canvas-video" width="640" height="480"></canvas>
+								</div>
+							</div>
+							<!--end: VIDEO KIM EDISON -->
+
+							<!-- start: CHAT -->
+							<div class="box black span6" onTablet="span6" 
+								onDesktop="span4">
+								<div class="box-header">
+									<h2><i class="halflings-icon white comment"></i>
+									<span class="break"></span>Chat Metro</h2>
+									<div class="box-icon">
+										<a href="#" class="btn-minimize">
+										<i class="halflings-icon white chevron-up"></i>
+										</a>
+									</div>
+								</div>
+								<div class="box-content">
+									<ul class="chat metro yellow" id="messages">
+									
+									</ul>
+									<div class="chat-form black">
+										<textarea id="mensagem"></textarea>
+										<form action="">
+											<button class="btn btn-warning">
+												Send message
+											</button>
+										</form>
+									</div>
+								</div>
+							</div>
+							<!-- end: CHAT -->
 						</div>
-					</div>
-					<div class="box-content">
-						<ul class="dashboard-list metro">
-							<li class="green">
-								<a href="#">
-									<img class="avatar" alt="Dennis Ji" src="img/avatar.jpg">
-								</a>
-								<strong>Name:</strong> Dennis Ji<br>
-								<strong>Since:</strong> Jul 25, 2012 11:09<br>
-								<strong>Status:</strong> Approved             
-							</li>
-							<li class="yellow">
-								<a href="#">
-									<img class="avatar" alt="Dennis Ji" src="img/avatar.jpg">
-								</a>
-								<strong>Name:</strong> Dennis Ji<br>
-								<strong>Since:</strong> Jul 25, 2012 11:09<br>
-								<strong>Status:</strong> Pending                                
-							</li>
-							<li class="red">
-								<a href="#">
-									<img class="avatar" alt="Dennis Ji" src="img/avatar.jpg">
-								</a>
-								<strong>Name:</strong> Dennis Ji<br>
-								<strong>Since:</strong> Jul 25, 2012 11:09<br>
-								<strong>Status:</strong> Banned                                  
-							</li>
-							<li class="blue">
-								<a href="#">
-									<img class="avatar" alt="Dennis Ji" src="img/avatar.jpg">
-								</a>
-								<strong>Name:</strong> Dennis Ji<br>
-								<strong>Since:</strong> Jul 25, 2012 11:09<br>
-								<strong>Status:</strong> Updated                                 
-							</li>
-						</ul>
-					</div>
-				</div><!--/span-->
-				
-				<div class="box black span4 noMargin" onTablet="span12" onDesktop="span4">
-					<div class="box-header">
-						<h2><i class="halflings-icon white check"></i><span class="break"></span>To Do List</h2>
-						<div class="box-icon">
-							<a href="#" class="btn-setting"><i class="halflings-icon white wrench"></i></a>
-							<a href="#" class="btn-minimize"><i class="halflings-icon white chevron-up"></i></a>
-							<a href="#" class="btn-close"><i class="halflings-icon white remove"></i></a>
-						</div>
-					</div>
-					<div class="box-content">
-						<div class="todo metro">
-							<ul class="todo-list">
-								<li class="red">
-									<a class="action icon-check-empty" href="#"></a>	
-									Windows Phone 8 App 
-									<strong>today</strong>
-								</li>
-								<li class="red">
-									<a class="action icon-check-empty" href="#"></a>
-									New frontend layout
-									<strong>today</strong>
-								</li>
-								<li class="yellow">
-									<a class="action icon-check-empty" href="#"></a>
-									Hire developers
-									<strong>tommorow</strong>
-								</li>
-								<li class="yellow">
-									<a class="action icon-check-empty" href="#"></a>
-									Windows Phone 8 App
-									<strong>tommorow</strong>
-								</li>
-								<li class="green">
-									<a class="action icon-check-empty" href="#"></a>
-									New frontend layout
-									<strong>this week</strong>
-								</li>
-								<li class="green">
-									<a class="action icon-check-empty" href="#"></a>
-									Hire developers
-									<strong>this week</strong>
-								</li>
-								<li class="blue">
-									<a class="action icon-check-empty" href="#"></a>
-									New frontend layout
-									<strong>this month</strong>
-								</li>
-								<li class="blue">
-									<a class="action icon-check-empty" href="#"></a>
-									Hire developers
-									<strong>this month</strong>
-								</li>
-							</ul>
-						</div>	
-					</div>
-				</div>
-			
+												
+					</div><!--end: Content.span10-->
 			</div>
-			<div class="row-fluid hideInIE8 circleStats">				
-                	
-                    <!--Tirei coisa aqui -->			
-						
-			</div>		
-			
-			<div class="row-fluid">	
+			<!-- end: row-fluid -->
+		</div>
+		<!--/Container-fluid-->
 
-				<a class="quick-button metro yellow span2">
-					<i class="icon-group"></i>
-					<p>Users</p>
-					<span class="badge">237</span>
-				</a>
-				<a class="quick-button metro red span2">
-					<i class="icon-comments-alt"></i>
-					<p>Comments</p>
-					<span class="badge">46</span>
-				</a>
-                <a class="quick-button metro pink span2">
-					<i class="icon-envelope"></i>
-					<p>Messages</p>
-					<span class="badge">88</span>
-				</a>
-								
-				<div class="clearfix"></div>
-								
-			</div><!--/row-->
-			
-       
 
-	</div><!--/.fluid-container-->
-	
-			<!-- end: Content -->
-		</div><!--/#content.span10-->
-		</div><!--/fluid-row-->
-		
-	<div class="modal hide fade" id="myModal">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal">×</button>
-			<h3>Settings</h3>
-		</div>
-		<div class="modal-body">
-			<p>Here settings can be configured...</p>
-		</div>
-		<div class="modal-footer">
-			<a href="#" class="btn" data-dismiss="modal">Close</a>
-			<a href="#" class="btn btn-primary">Save changes</a>
-		</div>
-	</div>
-	
-	<div class="common-modal modal fade" id="common-Modal1" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-content">
-			<ul class="list-inline item-details">
-				<li><a href="http://themifycloud.com">Admin templates</a></li>
-				<li><a href="http://themescloud.org">Bootstrap themes</a></li>
-			</ul>
-		</div>
-	</div>
-	
-	<div class="clearfix"></div>
-	
-	<% include ../partials/footer %>	
-		
-	<!-- start: JavaScript-->
-	<% include ../partials/scripts %>	
-	<!-- end: JavaScript-->
-	
-	
-	<!--start: VIDEO EDISON KIM 
-    <script src="/jsmpg.js"></script>
-    <script type="text/javascript">
-    // Show loading notice
-    var canvas = document.getElementById('canvas-video');
-    var ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#333'; //cor do quadrado do video
-    ctx.fillText('Loading...', canvas.width/2-30, canvas.height/3);
 
-    // Start the player
-    var client = new WebSocket('ws://' + document.domain + ':8084');
-    var player = new jsmpeg(client, { canvas:canvas });
-	</script>
-	<!end: VIDEO EDISON KIM -->
-	
+		<% include ../partials/footer %>
+			<!-- start: JavaScript-->
+			<% include ../partials/scripts %>
+				<!-- end: JavaScript-->
+
+
+				<!--start: VIDEO EDISON KIM 
+		<script src="/jsmpg.js"></script>
+		<script type="text/javascript">
+		// Show loading notice
+		var canvas = document.getElementById('canvas-video');
+		var ctx = canvas.getContext('2d');
+		ctx.fillStyle = '#333'; //cor do quadrado do video
+		ctx.fillText('Loading...', canvas.width/2-30, canvas.height/3);
+
+		// Start the player
+		var client = new WebSocket('ws://' + document.domain + ':8084');
+		var player = new jsmpeg(client, { canvas:canvas });
+		</script>
+		<!end: VIDEO EDISON KIM -->
+
 </body>
+
 </html>

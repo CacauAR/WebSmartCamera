@@ -3,7 +3,7 @@
 // get all the tools we need
 // ================================================================
 var express = require('express');
-var session  = require('express-session');
+var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
@@ -12,7 +12,7 @@ var app = express();
 var port = process.env.PORT || 8080;
 
 var passport = require('passport');
-var flash    = require('connect-flash');
+var flash = require('connect-flash');
 
 // ===============================================================
 // configuration database
@@ -45,7 +45,7 @@ app.use(session({
 	secret: 'vidyapathaisalwaysrunning',
 	resave: true,
 	saveUninitialized: true
- } )); // session secret
+})); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
@@ -53,11 +53,32 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 // ================================================================
 // setup routes
 // ================================================================
-routes(app,passport);
+routes(app, passport);
 
 // ================================================================
 // start our server
 // ================================================================
-app.listen(port, function() {
- console.log('Server listening on port ' + port + '…');
+app.set('port', port)
+var server = app.listen(port, function () {
+	console.log('Server listening on port ' + port + '…');
 });
+
+// ================================================================
+// start chat server
+// ================================================================
+var io = require('socket.io').listen(server);
+
+
+// start listen with socket.io
+io.sockets.on('connection', function(socket){  
+	console.log('a user connected');
+
+	socket.on('chat message', function(msg){
+	  console.log(' message: ' + msg);
+	  io.emit('chat message', msg);
+	});
+
+	socket.on('disconnect', function(){ 
+        console.log('user disconnected'); //@debug
+    });
+  });

@@ -6,7 +6,7 @@ var express = require('express');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var morgan = require('morgan');
+var logger = require('morgan');
 var routes = require('./routes/index.js');
 var app = express();
 var port = process.env.PORT || 8080;
@@ -20,20 +20,21 @@ var flash = require('connect-flash');
 // connect to our database
 require('./config/passport')(passport); // pass passport for configuration
 
+// ================================================================
+// setup our express application
+// ================================================================
 // set up our express application
-app.use(morgan('dev')); // log every request to the console
+app.use('/public', express.static(process.cwd() + '/public'));
+//need to be before logger('dev') - or will log all files from public dir!!!
+//process.cwd() returns returns a string value which is 
+//the current working directory - same as __dirname
+app.use(logger('dev')); // log every request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
 app.use(bodyParser.json());
 
-// ================================================================
-// setup our express application
-// ================================================================
-app.use('/public', express.static(process.cwd() + '/public'));
-//process.cwd() returns returns a string value which is 
-//the current working directory - same as __dirname
 app.set('view engine', 'ejs');
 // set the view engine to ejs
 
@@ -67,18 +68,16 @@ var server = app.listen(port, function () {
 // start chat server
 // ================================================================
 var io = require('socket.io').listen(server);
-
-
 // start listen with socket.io
-io.sockets.on('connection', function(socket){  
-	console.log('a user connected');
+io.sockets.on('connection', function (socket) {
+	console.log('a user connected'); //@debug
 
-	socket.on('chat message', function(msg){
-	  console.log(' message: ' + msg);
-	  io.emit('chat message', msg);
+	socket.on('chat message', function (msg) {
+		console.log(' message: ' + msg);
+		io.emit('chat message', msg);
 	});
 
-	socket.on('disconnect', function(){ 
-        console.log('user disconnected'); //@debug
-    });
-  });
+	socket.on('disconnect', function () {
+		console.log('user disconnected'); //@debug
+	});
+});

@@ -14,7 +14,7 @@ var port = process.env.PORT || 8080;
 var passport = require('passport');
 var flash = require('connect-flash');
 
-// ===============================================================
+// ================================================================
 // configuration database
 // ================================================================
 // connect to our database
@@ -25,9 +25,9 @@ require('./config/passport')(passport); // pass passport for configuration
 // ================================================================
 // set up our express application
 app.use('/public', express.static(process.cwd() + '/public'));
-//need to be before logger('dev') - or will log all files from public dir!!!
-//process.cwd() returns returns a string value which is 
-//the current working directory - same as __dirname
+// need to be before logger('dev') - or will log all files from public dir!!!
+// process.cwd() returns returns a string value which is 
+// the current working directory - same as __dirname
 app.use(logger('dev')); // log every request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser.urlencoded({
@@ -55,6 +55,28 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 // setup routes
 // ================================================================
 routes(app, passport);
+
+// ================================================================
+// error handlers
+// ================================================================
+// catch 404 and forward to error handler
+// this will throw a new error and pass it on the the app using next().
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// don't print a "stack trace" error when we're in production
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
 
 // ================================================================
 // start our server

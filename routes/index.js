@@ -9,25 +9,16 @@ module.exports = function (app, passport) {
       title: "WebSmartCamera - Ferramentas do Administrador"
     });
   });
-
   app.get('/calendar', isLoggedIn, function (req, res) {
     res.render('pages/calendar', {
       user: req.user,
       title: "WebSmartCamera - Calendário de Aulas"
     });
   });
-
-  app.get('/index', isLoggedIn, function (req, res) {
-    res.render('pages/index', {
-      user: req.user,
-      title: "WebSmartCamera - Disciplinas" 
-    });
-  });
-
   app.get('/listadisciplinas', isLoggedIn, function (req, res) {
     res.render('pages/listadisciplinas', {
       user: req.user,
-      title: "WebSmartCamera - Lista -Mexer!!!" 
+      title: "WebSmartCamera - Lista Disciplinas" 
     });
   });
   app.get('/messages', isLoggedIn, function (req, res) {
@@ -42,16 +33,16 @@ module.exports = function (app, passport) {
       title: "WebSmartCamera - Cadastro" 
     });
   });
-  app.get('/submenu', isLoggedIn, function (req, res) {
-    res.render('pages/submenu', {
+  app.get('/fis203', isLoggedIn, function (req, res) {
+    res.render('pages/fis203', {
       user: req.user,
-      title: "WebSmartCamera - NOME DISCIPLINA!!" 
+      title: "WebSmartCamera - FIS 203" 
     });
   });
   app.get('/video', isLoggedIn, function (req, res) {
     res.render('pages/video', {
       user: req.user,
-      title: "WebSmartCamera - ARRUMAR COM VIDEO TRANSMISSAO" 
+      title: "WebSmartCamera - Aula ao Vivo" 
     });
   });
 
@@ -62,7 +53,7 @@ module.exports = function (app, passport) {
   app.get('/', function (req, res) {
     if (req.user) {
       //if user is logged he will be redirected to index page
-      res.redirect('/index');
+      res.redirect('/listadisciplinas');
     }
     else {
       // render the page and pass in any flash data if it exists
@@ -75,7 +66,7 @@ module.exports = function (app, passport) {
 
   // process the login form
   app.post('/login', passport.authenticate('local-login', {
-    successRedirect: 'index', // redirect to the secure profile index section
+    successRedirect: 'listadisciplinas', // redirect to the secure profile index section
     failureRedirect: '/', // redirect back to the login page if there is an error
     failureFlash: true // allow flash messages
     }),
@@ -104,7 +95,7 @@ module.exports = function (app, passport) {
 
   // process the signup form
   app.post('/signup', passport.authenticate('local-signup', {
-    successRedirect: 'index', // redirect to the secure profile section
+    successRedirect: 'listadisciplinas', // redirect to the secure profile section
     failureRedirect: 'signup', // redirect back to the signup page if there is an error
     failureFlash: true // allow flash messages
   }));

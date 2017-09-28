@@ -21,21 +21,13 @@
 				<% include ../partials/sidebar_left %>
 					<!-- end: Main Menu -->
 
-					<noscript>
-						<div class="alert alert-block span10">
-							<h4 class="alert-heading">Warning!</h4>
-							<p>You need to have <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a> enabled to use this
-								site.</p>
-						</div>
-					</noscript>
-
 					<!-- start: Content -->
 					<div id="content" class="span10">
 
 						<ul class="breadcrumb">
 							<li>
 								<i class="icon-home"></i>
-								<a href="index">Home</a>
+								<a href="listadisciplinas">Home</a>
 								<i class="icon-angle-right"></i>
 							</li>
 							<li><a href="#">Lista Disciplinas</a></li>
@@ -60,7 +52,7 @@
 										</thead>
 										<tbody>
 											<tr>
-												<td><a href="#">FIS 203 - Física 3</a></td>
+												<td><a href="fis203">FIS 203 - Física 3</a></td>
 											</tr>
 											<tr>
 												<td><a href="#">INF 494 - Padrões de Projeto</a></td>
@@ -86,14 +78,11 @@
 		</div>
 		<!--/fluid-row-->
 
-		
-
 		<% include ../partials/footer %>
 
-			<!-- start: JavaScript-->
-			<% include ../partials/scripts %>
-				<!-- end: JavaScript-->
-
+		<!-- start: JavaScript-->
+		<% include ../partials/scripts %>
+		<!-- end: JavaScript-->
 </body>
 
 </html>

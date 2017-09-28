@@ -8,11 +8,14 @@
 </head>
 
 <body>
-	<!-- start: Header -->
-	<% include ../partials/navbar_login %>
-	<!-- start: Header -->
+	<div class="navbar">
+        <% include ../partials/navbar_login %>
+    </div>
+
+    <div class="content">
 
 	<div class="container">
+
         <div class="col-sm-6 col-sm-offset-3">
             <h1><span class="fa fa-sign-in"></span> Login</h1>
 
@@ -43,6 +46,7 @@
 
             <p>Need an account? <a href="signup">Signup</a></p>
         </div>
+    </div>
     </div>
 
 	<% include ../partials/footer %>

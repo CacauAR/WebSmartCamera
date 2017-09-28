@@ -242,6 +242,10 @@ body {
 	font-weight: 400;
 }
 
+.content {
+      min-height: calc(100vh - 85px);
+    }
+
 a {
 	color: #646464;
 }
@@ -2492,7 +2496,7 @@ div.uploader{
 =================================================================== */
 
 footer {
-	min-height: 24px;
+	height: 24px;
 	background: #1C2B36;;
 	color: #fff !important;
 	-webkit-border-radius: 0px;

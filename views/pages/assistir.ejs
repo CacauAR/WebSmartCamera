@@ -1,0 +1,48 @@
+<!-- views/pages/assistir.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>  
+  <title><%= title %></title>
+  <% include ../partials/head %>      
+</head>
+
+  <!-- start: Header -->
+
+   <body>
+      <% include ../partials/navbar%>
+
+
+
+      <div class="container-fluid-full" style="text-align:left">
+      <div class="row-fluid">
+      <!-- start: Main Menu -->
+        <% include ../partials/sidebar_left %>
+          <!-- end: Main Menu -->
+
+
+
+           <div class = "content" style="text-align:center">
+
+
+     
+       <!-- Mude o src dessa tag para o nome do video que você possuir -->
+       <video src="/movies/got01.mp4" controls width="640" height="480"></video>
+     
+
+
+     </div>
+
+
+
+    </div>
+  </div>
+
+  <% include ../partials/footer %>
+    
+  <!-- start: JavaScript-->
+  <% include ../partials/scripts %> 
+  <!-- end: JavaScript-->
+     
+   </body>
+ </html>

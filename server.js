@@ -1,13 +1,13 @@
 'use strict';
 // ================================================================
-// get all the tools we need
+// get all the modules we need
 // ================================================================
 var express = require('express');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
-var routes = require('./routes/index.js');
+//var routes = require('./routes/index.js');
 var app = express();
 var port = process.env.PORT || 8080;
 
@@ -18,7 +18,8 @@ var flash = require('connect-flash');
 // configuration database
 // ================================================================
 // connect to our database
-require('./config/passport')(passport); // pass passport for configuration
+// pass passport module
+require('./config/passport')(passport); 
 
 // ================================================================
 // setup our express application
@@ -36,7 +37,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.set('view engine', 'ejs');
-// set the view engine to ejs
+// set the view engine to ejs (Embedded JS)
 
 // ================================================================
 // setup session configuration
@@ -54,7 +55,12 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 // ================================================================
 // setup routes
 // ================================================================
-routes(app, passport);
+// pass passport module as middleware to router
+var routes = require('./routes/index.js')(express,passport);
+
+app.use('/', routes);
+
+//routes(app, passport);
 
 // ================================================================
 // error handlers
@@ -67,15 +73,15 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-// don't print a "stack trace" error when we're in production
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+	// don't print a "stack trace" error when we're in production
+	res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('pages/error');
 });
 
 // ================================================================

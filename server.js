@@ -57,7 +57,6 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 // ================================================================
 // pass passport module as middleware to router
 var routes = require('./routes/index.js')(express,passport);
-
 app.use('/', routes);
 
 //routes(app, passport);
@@ -81,14 +80,17 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('pages/error');
+  res.render('pages/error', {
+		erro: err.message,
+		codigo: err.status
+	});
 });
 
 // ================================================================
 // start our server
 // ================================================================
 app.set('port', port)
-var server = app.listen(port, function () {
+var server = app.listen(port, '0.0.0.0', function () {
 	console.log('Server listening on port ' + port + '…');
 });
 
@@ -98,14 +100,29 @@ var server = app.listen(port, function () {
 var io = require('socket.io').listen(server);
 // start listen with socket.io
 io.sockets.on('connection', function (socket) {
-	console.log('a user connected'); //@debug
+	var addedUser = false;
+	//console.log('a user connected'); //@debug
 
-	socket.on('chat message', function (msg) {
-		console.log(' message: ' + msg);
-		io.emit('chat message', msg);
+	// when the client emits 'new message', this listens and executes
+	socket.on('chat message', function (data) {
+		console.log(' message: -  ' + data.message + " - from " + socket.username);
+		// we tell the client to execute 'new message'
+		io.emit('chat message', {
+			username: socket.username,
+			message: data.message
+		});	
 	});
 
+	socket.on('adduser',function (username) {		
+		if (addedUser) return;
+		// we store the username in the socket session for this client
+		socket.username = username;
+		addedUser = true;
+		console.log("Usuário " + username + " conectou ao chat.");
+	});
+	
 	socket.on('disconnect', function () {
 		console.log('user disconnected'); //@debug
+		addedUser = false;
 	});
 });

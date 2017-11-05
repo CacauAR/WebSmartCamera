@@ -5,6 +5,11 @@ module.exports = {
         'user': 'root',
         'password': 'root'
     },
-	'database': 'testedatabase',
-    'users_table': 'users'
+	'database': 'testedatabase3',
+    'admin_table': 'administrador',
+    'alunos_table' : 'aluno',
+    'professores_table' : 'professor',
+    'disciplinas_table' : 'disciplina',
+    'turmas_table' : 'turma',
+    'turma_aluno_table' : 'estuda'   
 };

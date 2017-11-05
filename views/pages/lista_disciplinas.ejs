@@ -1,0 +1,103 @@
+<!-- views/lista_disciplinas.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title><%= title %></title>
+	<% include ../partials/head %>			
+</head>
+<body>
+	<!-- start: Header -->
+	<% include ../partials/navbar %>				
+	<!-- end: Header -->	
+	
+	<div class="container-fluid-full">
+		<div class="row-fluid">
+		<!-- start: Main Menu -->
+		<% include ../partials/sidebar_left %>
+		<!-- end: Main Menu -->
+			
+		<!-- start: Content -->
+			<div id="content" class="span10">
+				<ul class="breadcrumb">
+					<li>
+						<i class="icon-home"></i>
+						<a href="listadisciplinas">Home</a>
+						<i class="icon-angle-right"></i>
+					</li>
+					<li><a href="lista_disciplinas">Lista Disciplinas</a></li>
+				</ul>
+
+				<!-- Cadastro de Disciplina FORM  - MELHORAR LAYOUT-->
+				<form action="/lista_disciplinas" method="post">                
+					<div class="form-group">
+							<label>Codigo da disciplina </label>
+							<input type="text" class="form-control" name="codDisciplina">
+							(Apenas 6 characteres. Exemplo: INF332)
+					</div>
+					<div class="form-group">
+							<label>Nome da disciplina</label>
+							<input type="text" class="form-control" name="nomeDisciplina">
+					</div>
+					<button type="submit" class="btn btn-warning btn-lg">Cadastrar</button>
+				</form>
+
+				<% if (message == 1) { %>
+					<div class="alert alert-error">Erro ao tentar adicionar disciplina.</div>
+				<% } else if (message == 2) { %>
+					<div class="alert alert-success">Disciplina adicionada com sucesso.</div>
+				<% } %>
+
+				<!-- Listar disciplinas no sistema -->
+				<div class="row-fluid sortable">		
+					<div class="box span12">
+						<div class="box-header" data-original-title>
+							<h2><i class="halflings-icon white user"></i><span class="break">
+								</span>Disciplinas Cadastradas</h2>
+						</div>
+						<div class="box-content">
+							<table class="table table-striped table-bordered 
+								bootstrap-datatable datatable">
+								<thead>
+									<tr>
+										<th>Código</th>
+										<th>Nome</th>
+										<th>Ações</th>
+									</tr>
+								</thead>   
+								<tbody>
+									<% for (var i in lista) { %>
+									<tr>
+										<td><%= lista[i].codigo %></td>
+										<td><%= lista[i].nomeDisciplina %></td>
+										<td class="center">
+											<a class="btn btn-info" title="Editar" data-rel="tooltip" href="#">
+												<i class="halflings-icon white edit"></i>  
+											</a>
+											<a class="btn btn-danger" title="Remover" data-rel="tooltip" href="#">
+												<i class="halflings-icon white trash"></i> 
+											</a>
+										</td>
+									</tr>		
+									<% } %>			
+								</tbody>
+
+							</table>            
+						</div>
+					</div><!--/span-->
+				
+				</div>
+			</div>				
+		</div>
+	</div>
+		
+	<!-- start: Footer-->
+	<% include ../partials/footer %>
+	<!-- end: Footer-->
+	
+	<!-- start: JavaScript-->
+	<% include ../partials/scripts %>
+	<!-- end: JavaScript-->
+	
+</body>
+</html>

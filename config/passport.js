@@ -26,7 +26,8 @@ module.exports = function(passport) {
 
     // used to deserialize the user
     passport.deserializeUser(function(id, done) {
-        connection.query("SELECT * FROM users WHERE id = ? ",[id], function(err, rows){
+        connection.query("SELECT * FROM " + dbconfig.alunos_table  + " WHERE id = ? ",[id], 
+            function(err, rows){
             done(err, rows[0]);
         });
     });
@@ -34,39 +35,51 @@ module.exports = function(passport) {
     // =========================================================================
     // LOCAL SIGNUP ============================================================
     // =========================================================================
-    // we are using named strategies since we have one for login and one for signup
-    // by default, if there was no name, it would just be called 'local'
+    // we are using named strategies since we have one for login and one for 
+    // signup by default, if there was no name, it would just be called 'local'
 
     passport.use(
         'local-signup',
         new LocalStrategy({
-            // by default, local strategy uses username and password, we will override with email
+            // by default, local strategy uses username and password, 
+            //we will override with email
             usernameField : 'username',
             passwordField : 'password',
-            passReqToCallback : true // allows us to pass back the entire request to the callback
+            passReqToCallback : true 
+            // allows us to pass back the entire request to the callback
         },
         function(req, username, password, done) {
             // find a user whose email is the same as the forms email
             // we are checking to see if the user trying to login already exists
-            connection.query("SELECT * FROM users WHERE username = ?",[username], function(err, rows) {
+            connection.query("SELECT * FROM " + dbconfig.alunos_table  + 
+                " WHERE username = ?", [username], function(err, rows) {
                 if (err)
                     return done(err);
                 if (rows.length) {
-                    return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
+                    return done(null, false, req.flash('signupMessage', 
+                        'That username is already taken.'));
                 } else {
                     // if there is no user with that username
                     // create the user
                     var newUserMysql = {
+                        matricula: req.body.matricula,
                         username: username,
-                        password: bcrypt.hashSync(password, null, null)  // use the generateHash function in our user model
+                        sex: req.body.sexo,
+                        email: req.body.email,
+                        password: bcrypt.hashSync(password, null, null),  
+                        // use the generateHash function in our user model                        
                     };
 
-                    var insertQuery = "INSERT INTO users ( username, password ) values (?,?)";
+                    var insertQuery = "INSERT INTO " + dbconfig.alunos_table  + 
+                        " ( matricula, username, sexo, email, password )" +
+                        " values (?,?,?,?,?) ";
 
-                    connection.query(insertQuery,[newUserMysql.username, newUserMysql.password],function(err, rows) {
-                        newUserMysql.id = rows.insertId;
-
-                        return done(null, newUserMysql);
+                    connection.query(insertQuery,[newUserMysql.matricula, 
+                        newUserMysql.username, newUserMysql.sex, 
+                        newUserMysql.email, newUserMysql.password],
+                        function(err, rows) {
+                            newUserMysql.id = rows.insertId;
+                            return done(null, newUserMysql);
                     });
                 }
             });
@@ -76,32 +89,41 @@ module.exports = function(passport) {
     // =========================================================================
     // LOCAL LOGIN =============================================================
     // =========================================================================
-    // we are using named strategies since we have one for login and one for signup
-    // by default, if there was no name, it would just be called 'local'
+    // we are using named strategies since we have one for login and one for 
+    // signup by default, if there was no name, it would just be called 'local'
 
     passport.use(
         'local-login',
         new LocalStrategy({
-            // by default, local strategy uses username and password, we will override with email
+            // by default, local strategy uses username and password, 
+            //we will override with email
             usernameField : 'username',
             passwordField : 'password',
-            passReqToCallback : true // allows us to pass back the entire request to the callback
+            passReqToCallback : true 
+            // allows us to pass back the entire request to the callback
         },
-        function(req, username, password, done) { // callback with email and password from our form
-            connection.query("SELECT * FROM users WHERE username = ?",[username], function(err, rows){
+        function(req, username, password, done) { 
+            // callback with email and password from our form
+            connection.query("SELECT * FROM " + dbconfig.alunos_table  + " WHERE username = ?",
+                [username], function(err, rows){
                 if (err)
                     return done(err);
                 if (!rows.length) {
-                    return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
+                    return done(null, false, req.flash('loginMessage', 
+                    'No user found.')); 
+                    // req.flash is the way to set flashdata using connect-flash
                 }
 
                 // if the user is found but the password is wrong
                 if (!bcrypt.compareSync(password, rows[0].password))
-                    return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
+                    return done(null, false, req.flash('loginMessage', 
+                    'Oops! Wrong password.')); 
+                // create the loginMessage and save it to session as flashdata
 
                 // all is well, return successful user
                 return done(null, rows[0]);
             });
         })
     );
+
 };

@@ -52,18 +52,13 @@
 											</tr>
 										</thead>
 										<tbody>
-											<tr>
-												<td><a href="fis203">FIS 203 - Física 3</a></td>
-											</tr>
-											<tr>
-												<td><a href="#">INF 494 - Padrões de Projeto</a></td>
-											</tr>
-											<tr>
-												<td><a href="#">INF 332 - Projeto e Análise de Algoritmos</a></td>
-											</tr>
-											<tr>
-												<td><a href="#">INF 499 - Seminários 2</a></td>
-											</tr>
+											<% for (var i in lista) { %>
+												<tr>
+													<td>
+														<a href="<%= lista[i].codigo %>"><%= lista[i].codigo %> - <%= lista[i].nomeDisciplina %></a>
+													</td>
+												</tr>
+											<% } %>
 										</tbody>
 									</table>
 

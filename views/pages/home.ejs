@@ -1,16 +1,14 @@
-<!-- views/listadisciplinas.ejs -->
+<!-- views/home.ejs -->
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 	<title>
 		<%= title %>
 	</title>
-	<base href="listadisciplinas">
+	<base href="home">
 	<% include ../partials/head %>
 </head>
-
 <body>
 	<!-- start: Header -->
 	<% include ../partials/navbar %>
@@ -28,7 +26,7 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="icon-home"></i>
-								<a href="listadisciplinas">Home</a>
+								<a href="home">Home</a>
 								<i class="icon-angle-right"></i>
 							</li>
 							<li><a href="#">Lista Disciplinas</a></li>
@@ -38,9 +36,11 @@
 							<div class="box span12">
 
 								<div class="box-header">
-									<h2><i class="halflings-icon white align-justify"></i><span class="break"></span></h2>
+									<h2><i class="halflings-icon white align-justify"></i>
+										<span class="break"></span></h2>
 									<div class="box-icon">
-										<a href="#" class="btn-minimize"><i class="halflings-icon white chevron-up"></i></a>
+										<a href="#" class="btn-minimize">
+											<i class="halflings-icon white chevron-up"></i></a>
 									</div>
 								</div>
 
@@ -55,7 +55,9 @@
 											<% for (var i in lista) { %>
 												<tr>
 													<td>
-														<a href="<%= lista[i].codigo %>"><%= lista[i].codigo %> - <%= lista[i].nomeDisciplina %></a>
+														<a href="<%= lista[i].codigo %>">
+															<%= lista[i].codigo %> - <%= lista[i].nomeDisciplina %>
+														</a>
 													</td>
 												</tr>
 											<% } %>

@@ -1,39 +1,57 @@
 <!-- views/partials/sidebar_left.ejs -->
 <div id="sidebar-left" class="span2">
-        <div class="nav-collapse sidebar-nav">
-            <ul class="nav nav-tabs nav-stacked main-menu">
-                <li><a href="listadisciplinas"><i class="icon-align-justify"></i>
-                    <span class="hidden-tablet"> Lista Turmas</span></a></li>
-                <li><a href="video"><i class="icon-bar-chart"></i>
-                    <span class="hidden-tablet"> Video Chat</span></a></li>	
-                <li><a href="messages"><i class="icon-envelope"></i>
-                    <span class="hidden-tablet"> Messages</span></a></li>
-                <li>
-                    <a class="dropmenu" href="#"><i class="icon-folder-close-alt">
-                        </i><span class="hidden-tablet"> Disciplinas</span>
-                        <span class="label label-important"> 3 </span>
-                    </a>
-                    <ul>                              
-                        <li><a class="submenu" href="FIS203"><i class="icon-file-alt"></i><span class="hidden-tablet"> Física 3</span></a></li>
-                        <li><a class="submenu" href="submenu2.html"><i class="icon-file-alt"></i><span class="hidden-tablet"> Padrões de Projeto</span></a></li>
-                        <li><a class="submenu" href="submenu3.html"><i class="icon-file-alt"></i><span class="hidden-tablet"> Projeto e Análise de Algoritmos</span></a></li>
-                    </ul>	
-                </li>
-                <li><a href="register"><i class="icon-edit"></i><span class="hidden-tablet"> Cadastrar Usuário</span></a></li>
-                <li><a href="calendar"><i class="icon-calendar"></i><span class="hidden-tablet"> Calendário</span></a></li>
-                <!--
-                <li><a href="admintools"><i class="icon-folder-open"></i><span class="hidden-tablet"> Ferramentas Administrador</span></a></li>
-                -->
-                <li>
-                    <a class="dropmenu" href="#"><i class="icon-folder-close-alt">
-                        </i><span class="hidden-tablet"> Ferramentas Administrador</span>
-                    </a>
-                    <ul>                              
-                        <li><a class="submenu" href="lista_disciplinas"><i class="icon-file-alt"></i><span class="hidden-tablet"> Lista Disciplinas</span></a></li>
-                        <li><a class="submenu" href="lista_professores"><i class="icon-file-alt"></i><span class="hidden-tablet"> Lista Professores</span></a></li>
-                        <li><a class="submenu" href="lista_turmas"><i class="icon-file-alt"></i><span class="hidden-tablet"> Listar/Cadastrar Turmas</span></a></li>
-                    </ul>	
-                </li>
-            </ul>
-        </div>
-    </div>
+		<div class="nav-collapse sidebar-nav">
+			<ul class="nav nav-tabs nav-stacked main-menu">
+				<li><a href="home"><i class="icon-align-justify"></i>
+					<span class="hidden-tablet"> Lista Turmas</span></a></li>
+				<li><a href="video"><i class="icon-bar-chart"></i>
+					<span class="hidden-tablet"> Video Chat</span></a></li>	
+				<li><a href="messages"><i class="icon-envelope"></i>
+					<span class="hidden-tablet"> Messages</span></a></li>
+				<li>
+					<a class="dropmenu" href="#"><i class="icon-folder-close-alt">
+						</i><span class="hidden-tablet"> Disciplinas</span>
+						<span class="label label-important"> 3 </span>
+					</a>
+					<ul>                              
+						<li><a class="submenu" href="FIS203"><i class="icon-file-alt">
+							</i><span class="hidden-tablet"> Física 3</span></a>
+						</li>
+						<li><a class="submenu" href="submenu2.html"><i class="icon-file-alt">
+							</i><span class="hidden-tablet"> Padrões de Projeto</span></a>
+						</li>
+						<li><a class="submenu" href="submenu3.html"><i class="icon-file-alt">
+							</i><span class="hidden-tablet"> Projeto e Análise de Algoritmos
+							</span></a>
+						</li>
+					</ul>	
+				</li>
+				<li><a href="calendar"><i class="icon-calendar"></i>
+					<span class="hidden-tablet"> Calendário</span></a>
+				</li>
+			
+				<%	if (tipoUsuario == "administrador") { %>
+					<li>
+						<a class="dropmenu" href="#"><i class="icon-folder-close-alt">
+							</i><span class="hidden-tablet"> Ferramentas Administrador</span>
+						</a>
+						<ul>  
+								<li><a class="submenu" href="signup"><i class="icon-file-alt">
+									</i><span class="hidden-tablet"> Cadastrar Usuário</span></a>
+								</li>                            
+							<li><a class="submenu" href="lista_disciplinas"><i class="icon-file-alt">
+								</i><span class="hidden-tablet"> Lista Disciplinas</span></a>
+							</li>
+							<li><a class="submenu" href="lista_professores"><i class="icon-file-alt">
+								</i><span class="hidden-tablet"> Lista Professores</span></a>
+							</li>
+							<li><a class="submenu" href="lista_turmas"><i class="icon-file-alt">
+								</i><span class="hidden-tablet"> Listar Turmas</span></a>
+							</li>
+						</ul>	
+					</li>
+				<% } %>				
+
+			</ul>
+		</div>
+	</div>

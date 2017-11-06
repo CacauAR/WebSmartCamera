@@ -12,17 +12,21 @@ module.exports = function (express, passport) {
   // SIGNUP ==========================================
   // =================================================
   // show the signup form
-  router.get('/signup', function (req, res) {
-    // render the page and pass in any flash data if it exists
-    res.render('pages/signup', {
-      message: req.flash('signupMessage'),
-      title: "WebSmartCamera - Cadastro de Usuário"
-   });
+  router.get('/signup', isLoggedIn, function (req, res) {
+    if (req.session.typeuser == "administrador") {
+      // render the page and pass in any flash data if it exists
+      res.render('pages/signup', {
+        user: req.user,
+        title: "WebSmartCamera - Cadastro de Usuário",
+        message: req.flash('signupMessage'),      
+        tipoUsuario : req.session.typeuser  
+      });
+    } else res.redirect('/home');
   });
 
   // process the signup form
   router.post('/signup', passport.authenticate('local-signup', {
-    successRedirect: 'listadisciplinas',
+    successRedirect: 'signup',
      // redirect to the secure profile section
     failureRedirect: 'signup', 
     // redirect back to the signup page if there is an error
@@ -40,32 +44,37 @@ module.exports = function (express, passport) {
   // =================================================
   // HOME PAGE =======================================
   // =================================================
-  router.get('/listadisciplinas', isLoggedIn, function (req, res) {
-    //MUDAR PARA EXIBIR LISTA DE DISCIPLINAS DO ALUNO - PEGAR DA TABELA ESTUDA   
+  router.get('/home', isLoggedIn, function (req, res) {   
+      //MUDAR PARA EXIBIR LISTA DE DISCIPLINAS DO ALUNO - PEGAR DA TABELA ESTUDA   
     
-    var query =  "SELECT * FROM " + dbconfig.disciplinas_table; 
-    queryFile.data.selectSQLquery(query, function (result) {
-      res.render('pages/listadisciplinas', {
-        user: req.user,
-        title: "WebSmartCamera - Lista Disciplinas Aluno",
-        lista : result
-      }); 
-    });
+      var query =  "SELECT * FROM " + dbconfig.disciplinas_table; 
+      queryFile.data.selectSQLquery(query, function (result) {
+        res.render('pages/home', {
+         user: req.user,
+         title: "WebSmartCamera - Lista Disciplinas Aluno",
+         lista : result,
+         tipoUsuario : req.session.typeuser
+        }); 
+     });
+
   });
 
   //=================================================
   // LISTA DE TODAS AS DISCIPLINAS ==================
   // ================================================
   router.get('/lista_disciplinas', isLoggedIn, function (req, res) { 
-    var query =  "SELECT * FROM " + dbconfig.disciplinas_table; 
-    queryFile.data.selectSQLquery(query, function (result) {
-      res.render('pages/lista_disciplinas', {
-        user: req.user,
-        title: "WebSmartCamera - Lista Disciplinas",
-        lista : result,
-        message: req.flash('info')
+    if (req.session.typeuser == "administrador") {
+      var query =  "SELECT * FROM " + dbconfig.disciplinas_table; 
+      queryFile.data.selectSQLquery(query, function (result) {
+        res.render('pages/lista_disciplinas', {
+         user: req.user,
+          title: "WebSmartCamera - Lista Disciplinas",
+          lista : result,
+          message: req.flash('info'),
+         tipoUsuario : req.session.typeuser
+        }); 
       }); 
-    });   
+    } else res.redirect('/home');  
   });
 
   // processa o formulário de cadastro de disciplina
@@ -83,31 +92,32 @@ module.exports = function (express, passport) {
   //=================================================
   // LISTA DE TODAS AS TURMAS =======================
   // ================================================
-  router.get('/lista_turmas', isLoggedIn, function (req, res) { 
-    var query = "SELECT * FROM " + dbconfig.turmas_table; 
-    var query2 = "SELECT matricula, username FROM " + dbconfig.professores_table;  
-    var query3 = "SELECT * FROM " + dbconfig.disciplinas_table;
+  router.get('/lista_turmas', isLoggedIn, function (req, res) {
+    if (req.session.typeuser == "administrador") { 
+      var query = "SELECT * FROM " + dbconfig.turmas_table; 
+      var query2 = "SELECT matricula, username FROM " + dbconfig.professores_table;  
+      var query3 = "SELECT * FROM " + dbconfig.disciplinas_table;
+      var listaProfessores, listaDisciplinas;
+      
+      queryFile.data.selectSQLquery(query2, function (result){
+        listaProfessores = result;
+      });      
+      queryFile.data.selectSQLquery(query3, function (result){
+        listaDisciplinas = result;
+      });
 
-    var listaProfessores, listaDisciplinas;
-    
-    queryFile.data.selectSQLquery(query2, function (result){
-      listaProfessores = result;
-    });
-    
-    queryFile.data.selectSQLquery(query3, function (result){
-      listaDisciplinas = result;
-    });
-
-    queryFile.data.selectSQLquery(query, function (result) {
-      res.render('pages/lista_turmas', {
-        user: req.user,
-        title: "WebSmartCamera - Lista Turmas",
-        lista : result,
-        listaDeProfessores : listaProfessores,
-        listaDeDisciplinas : listaDisciplinas,
-        message: req.flash('info')
-      }); 
-    });   
+      queryFile.data.selectSQLquery(query, function (result) {
+        res.render('pages/lista_turmas', {
+          user: req.user,
+          title: "WebSmartCamera - Lista Turmas",
+          lista : result,
+          listaDeProfessores : listaProfessores,
+          listaDeDisciplinas : listaDisciplinas,
+          message: req.flash('info'),
+          tipoUsuario : req.session.typeuser
+        }); 
+      });   
+    } else res.redirect('/home');
   });
 
   // processa o formulário de cadastro de turmas
@@ -125,62 +135,41 @@ module.exports = function (express, passport) {
   // LISTA TODOS OS PROFESSORES =====================
   // ================================================
   router.get('/lista_professores', isLoggedIn, function (req, res) { 
-    var query =  "SELECT * FROM " + dbconfig.professores_table; 
-    queryFile.data.selectSQLquery(query, function (result) {
-      res.render('pages/lista_professores', {
-        user: req.user,
-        title: "WebSmartCamera - Listar de Professores",
-        lista : result,
-        message: req.flash('info')
+    if (req.session.typeuser == "administrador") { 
+      var query =  "SELECT * FROM " + dbconfig.professores_table; 
+      queryFile.data.selectSQLquery(query, function (result) {
+        res.render('pages/lista_professores', {
+          user: req.user,
+          title: "WebSmartCamera - Listar de Professores",
+          lista : result,
+          message: req.flash('info'),
+          tipoUsuario : req.session.typeuser
+        }); 
       }); 
-    });   
+    } else res.redirect('/home');  
   });
-
-  // ================================================
-  // CADASTRO DE PROFESSOR
-  // ================================================
-  router.get('/cadastro_professor', isLoggedIn, function (req, res) {     
-      res.render('pages/cadastro_professor', {
-        user: req.user,
-        title: "WebSmartCamera - Cadastro de Professor",
-        message: req.flash('info')      
-    });   
-  });
-
-  // processa o formulário de cadastro de professor
-  router.post('/cadastro_professor', function (req, res) {
-    var query =  "INSERT INTO " + dbconfig.professores_table + 
-      " (matricula, username, sexo, password, email) VALUES (?,?,?,?,?)"; 
-    var params = [req.body.matricula,req.body.username,req.body.sexo,
-      req.body.password,req.body.email];
-
-    queryFile.data.insertSQLquery(query, params, function (result){ 
-      req.flash('info', result);    
-      if (result == 1) res.redirect('/cadastro_professor');
-      else res.redirect('/lista_professores');      
-    });        
-  });
-
-
 
   router.get('/calendar', isLoggedIn, function (req, res) {
     res.render('pages/calendar', {
       user: req.user,
-      title: "WebSmartCamera - Calendário de Aulas"
+      title: "WebSmartCamera - Calendário de Aulas",
+      tipoUsuario : req.session.typeuser
     });
   });
 
   router.get('/messages', isLoggedIn, function (req, res) {
     res.render('pages/messages', {
       user: req.user,
-      title: "WebSmartCamera - Mensagens"
+      title: "WebSmartCamera - Mensagens",
+      tipoUsuario : req.session.typeuser
     });
   }); 
   
   router.get('/video', isLoggedIn, function (req, res) {
     res.render('pages/video', {
       user: req.user,
-      title: "WebSmartCamera - Aula ao Vivo"
+      title: "WebSmartCamera - Aula ao Vivo",
+      tipoUsuario : req.session.typeuser
     });
 
     var fs = require('fs'),
@@ -298,7 +287,7 @@ module.exports = function (express, passport) {
   router.get('/', function (req, res) {
     if (req.user) {
       //if user is logged he will be redirected to index page
-      res.redirect('/listadisciplinas');
+      res.redirect('/home');
     }
     else {
       // render the page and pass in any flash data if it exists
@@ -311,12 +300,13 @@ module.exports = function (express, passport) {
 
   // process the login form
   router.post('/login', passport.authenticate('local-login', {
-    successRedirect: 'listadisciplinas', 
+    successRedirect: 'home', 
     // redirect to the secure profile index section
     failureRedirect: '/', 
     // redirect back to the login page if there is an error
     failureFlash: true // allow flash messages
     }),
+
     function (req, res) {
       console.log("hello");
 
@@ -336,7 +326,8 @@ module.exports = function (express, passport) {
   router.get('/profile', isLoggedIn, function (req, res) {
     res.render('pages/profile', {
       user: req.user, // get the user out of session and pass to template
-      title: "WebSmartCamera - Perfil Usuário"
+      title: "WebSmartCamera - Perfil Usuário",
+      tipoUsuario : req.session.typeuser
     });
   });
 
@@ -351,9 +342,10 @@ module.exports = function (express, passport) {
       console.log("Pediu pra assistir aula " + req.query.aula
       + " da matéria "); 
         res.render('pages/assistir', {
-        user: req.user,
-        title: "WebSmartCamera - AULA TAL",
-        aula: req.query.aula
+          user: req.user,
+          title: "WebSmartCamera - AULA TAL",
+          aula: req.query.aula,
+          tipoUsuario : req.session.typeuser
         });
     }
     //verifica no banco de dados se existe tal página
@@ -362,6 +354,7 @@ module.exports = function (express, passport) {
       res.render('pages/' + courseId, {
         user: req.user,
         title: "WebSmartCamera - " + courseId,
+        tipoUsuario : req.session.typeuser
       });
     }
 

@@ -46,16 +46,19 @@ module.exports = function (express, passport) {
   // =================================================
   router.get('/home', isLoggedIn, function (req, res) {   
       //MUDAR PARA EXIBIR LISTA DE DISCIPLINAS DO ALUNO - PEGAR DA TABELA ESTUDA   
-    
-      var query =  "SELECT * FROM " + dbconfig.disciplinas_table; 
-      queryFile.data.selectSQLquery(query, function (result) {
-        res.render('pages/home', {
-         user: req.user,
-         title: "WebSmartCamera - Lista Disciplinas Aluno",
-         lista : result,
-         tipoUsuario : req.session.typeuser
-        }); 
-     });
+
+      //if (req.session.typeuser == "aluno"){
+        var query =  "SELECT codigoDisciplina, idTurma, nomeDisciplina FROM " + dbconfig.turma_aluno_table + ", " +
+        dbconfig.disciplinas_table + " WHERE codigo=codigoDisciplina AND matriculaAluno='" + req.user.matricula + "'"; 
+        queryFile.data.selectSQLquery(query, function (result) {
+           res.render('pages/home', {
+           user: req.user,
+           title: "WebSmartCamera - Lista Disciplinas Aluno",
+           lista : result,
+           tipoUsuario : req.session.typeuser
+          }); 
+        });
+      //}
 
   });
 
@@ -88,6 +91,7 @@ module.exports = function (express, passport) {
       res.redirect('/lista_disciplinas');
     });        
   });
+ 
 
   //=================================================
   // LISTA DE TODAS AS TURMAS =======================
@@ -149,6 +153,47 @@ module.exports = function (express, passport) {
     } else res.redirect('/home');  
   });
 
+
+  router.get('/matricular', isLoggedIn, function (req, res) {
+    if (req.session.typeuser == "administrador") { 
+      var query2 = "SELECT codigoDisciplina, id FROM " + dbconfig.turmas_table; 
+      //var query2 = "SELECT matricula, username FROM " + dbconfig.professores_table;  
+      var query = "SELECT matricula, username FROM " + dbconfig.alunos_table;
+      var query3 = "SELECT idTurma, matriculaAluno, codigoDisciplina FROM " + dbconfig.turma_aluno_table;
+      var listaTurmas, listaAlunos;
+         
+      queryFile.data.selectSQLquery(query2, function (result){
+        listaTurmas = result;
+      });
+      queryFile.data.selectSQLquery(query, function (result){
+        listaAlunos = result;
+      });
+
+      queryFile.data.selectSQLquery(query3, function (result) {
+        res.render('pages/matricular', {
+          user: req.user,
+          title: "WebSmartCamera - Matricular",
+          listaDeMatriculados : result,
+          listaDeAlunos : listaAlunos,
+          listaDeTurmas : listaTurmas,
+          message: req.flash('info'),
+          tipoUsuario : req.session.typeuser
+        }); 
+      });   
+    } else res.redirect('/home');
+  });
+
+  router.post('/matricular', function (req, res) {
+    var query =  "INSERT INTO " + dbconfig.turma_aluno_table + 
+      " (idTurma, matriculaAluno, codigoDisciplina) VALUES (?,?,?)"; 
+    var separado = req.body.codDisciplina.split("-");
+    var params = [separado[1], req.body.matriculaAluno, separado[0]];
+    queryFile.data.insertSQLquery(query, params, function (result){     
+      req.flash('info', result);      
+      res.redirect('/matricular');
+    });        
+  });
+
   router.get('/calendar', isLoggedIn, function (req, res) {
     res.render('pages/calendar', {
       user: req.user,
@@ -166,12 +211,29 @@ module.exports = function (express, passport) {
   }); 
   
   router.get('/video', isLoggedIn, function (req, res) {
-    res.render('pages/video', {
-      user: req.user,
-      title: "WebSmartCamera - Aula ao Vivo",
-      tipoUsuario : req.session.typeuser
-    });
+    if (req.session.typeuser == "professor") {
+        var query =  "SELECT codigoDisciplina, id FROM " + dbconfig.turmas_table + " WHERE matriculaProfessor = '" + req.user.matricula + "';"; 
+          queryFile.data.selectSQLquery(query, function (result) {
+            res.render('pages/video', {
+              user: req.user,
+              title: "WebSmartCamera - Aula ao Vivo",
+              tipoUsuario : req.session.typeuser,
+              listaTurmas : result
+            });
+          });
+    }else{
+        res.render('pages/video', {
+          user: req.user,
+          title: "WebSmartCamera - Aula ao Vivo",
+          tipoUsuario : req.session.typeuser
+         });
+      }
 
+
+  });
+
+  router.post('/video', function (req, res) {
+    //res.redirect('/video');
     var fs = require('fs'),
       http = require('http'),
       WebSocket = require('ws');
@@ -240,7 +302,24 @@ module.exports = function (express, passport) {
     console.log('Listening for incomming MPEG-TS Stream on http://127.0.0.1:'+STREAM_PORT+'/<secret>');
     console.log('Awaiting WebSocket connections on ws://127.0.0.1:'+WEBSOCKET_PORT+'/');
 
+    var childProcess = require('child_process');
+
+  var spawn = childProcess.spawn;
+
+
+  //function spawnFfmpeg(exitCallback) {
+    var args = ['-f', 'v4l2', '-framerate', '25', '-video_size', '640x480', '-i', '/dev/video0', 
+  '-f', 'alsa', '-ar', '44100', '-ac', '1', '-i', 'hw:1,0', '-f', 'mpegts','-codec:v',
+  'mpeg1video', '-s', '640x480', '-b:v', '1000k', '-bf', '0', '-codec:a', 'mp2', '-b:a', '128k',
+  '-muxdelay', '0.001', 'http://localhost:8081']
+                      
+  var ffmpeg = spawn('ffmpeg', args);
+                    
+  console.log('Spawning ffmpeg ' + args.join(' '));
+
+
   });
+  
 
   // =================================================
   // Page to watch classes already recorded ==========

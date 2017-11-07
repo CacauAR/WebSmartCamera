@@ -1,4 +1,5 @@
 var mysql = require('mysql');
+var bcrypt = require('bcrypt-nodejs');
 var dbconfig = require('../config/database');
 
 var connection = mysql.createConnection(dbconfig.connection);
@@ -7,45 +8,41 @@ connection.query('CREATE DATABASE ' + dbconfig.database);
 
 connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.admin_table + '` ( \
-    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT, \
-    `matricula` VARCHAR (7), \
-    `username` VARCHAR(20) NOT NULL, \
+    `matricula` VARCHAR (7) NOT NULL, \
+    `nome` VARCHAR(20) NOT NULL, \
     `sexo` CHAR(1), \
     `email` VARCHAR(100), \
     `password` CHAR(60) NOT NULL, \
-        PRIMARY KEY (`id`), \
-    UNIQUE INDEX `id_UNIQUE` (`id` ASC), \
+        PRIMARY KEY (`matricula`), \
     UNIQUE INDEX `matricula_UNIQUE` (`matricula` ASC), \
-    UNIQUE INDEX `username_UNIQUE` (`username` ASC) \
+    UNIQUE INDEX `nome_UNIQUE` (`nome` ASC) \
 )');
+
 
 connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.alunos_table + '` ( \
-    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT, \
-    `matricula` VARCHAR (7), \
-    `username` VARCHAR(20) NOT NULL, \
+    `matricula` VARCHAR (7) NOT NULL, \
+    `nome` VARCHAR(20) NOT NULL, \
     `sexo` CHAR(1), \
     `email` VARCHAR(100), \
     `password` CHAR(60) NOT NULL, \
-        PRIMARY KEY (`id`), \
-    UNIQUE INDEX `id_UNIQUE` (`id` ASC), \
+        PRIMARY KEY (`matricula`), \
     UNIQUE INDEX `matricula_UNIQUE` (`matricula` ASC), \
-    UNIQUE INDEX `username_UNIQUE` (`username` ASC) \
+    UNIQUE INDEX `nome_UNIQUE` (`nome` ASC) \
 )');
 
 connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.professores_table + '` ( \
-    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT, \
-    `matricula` VARCHAR (7), \
-    `username` VARCHAR(20) NOT NULL, \
+    `matricula` VARCHAR(7) NOT NULL, \
+    `nome` VARCHAR(20) NOT NULL, \
     `sexo` CHAR(1), \
     `email` VARCHAR(100), \
     `password` CHAR(60) NOT NULL, \
-        PRIMARY KEY (`id`), \
-    UNIQUE INDEX `id_UNIQUE` (`id` ASC), \
+        PRIMARY KEY (`matricula`), \
     UNIQUE INDEX `matricula_UNIQUE` (`matricula` ASC), \
-    UNIQUE INDEX `username_UNIQUE` (`username` ASC) \
+    UNIQUE INDEX `nome_UNIQUE` (`nome` ASC) \
 )');
+
 
 connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.disciplinas_table + '` ( \
@@ -56,12 +53,13 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.disciplinas_table + '` ( 
     UNIQUE INDEX `nomeDisciplina_UNIQUE` (`nomeDisciplina` ASC) \
 )');
 
+
 connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.turmas_table + '` ( \
-    `id` INT NOT NULL AUTO_INCREMENT, \
+    `id` INT NOT NULL, \
     `matriculaProfessor` VARCHAR (7) NOT NULL, \
     `codigoDisciplina` CHAR(6) NOT NULL, \
-        PRIMARY KEY (`id`, `matriculaProfessor`, `codigoDisciplina`), \
+        PRIMARY KEY (`id`, `codigoDisciplina`), \
     UNIQUE INDEX `id_UNIQUE` (`id` ASC), \
     CONSTRAINT `matriculaProf` FOREIGN KEY (`matriculaProfessor`) \
         REFERENCES `' + dbconfig.database + '`.`'+ dbconfig.professores_table + '` (`matricula`) \
@@ -71,12 +69,13 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.turmas_table + '` ( \
         ON DELETE CASCADE ON UPDATE CASCADE \
 )');
 
+
 connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.turma_aluno_table + '` ( \
     `idTurma` INT NOT NULL, \
     `matriculaAluno` VARCHAR (7) NOT NULL, \
     `codigoDisciplina` CHAR(6) NOT NULL, \
-        PRIMARY KEY (`idTurma`, `matriculaAluno`, `codigoDisciplina`), \
+        PRIMARY KEY (`matriculaAluno`, `codigoDisciplina`), \
     UNIQUE INDEX `id_UNIQUE` (`idTurma` ASC), \
     CONSTRAINT `IDTurma` FOREIGN KEY (`idTurma`) \
         REFERENCES `' + dbconfig.database + '`.`'+ dbconfig.turmas_table + '` (`id`)\
@@ -89,6 +88,32 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.turma_aluno_table + '` ( 
         ON DELETE CASCADE ON UPDATE CASCADE \
 )');
 
+
 console.log('Success: Database Created!')
+connection.end();
+
+
+var connection = mysql.createConnection(dbconfig.connection);
+connection.query('USE ' + dbconfig.database); 
+
+var newUserMysql = {
+                        matricula: "es00001",
+                        username: "root",
+                        sex: "F",
+                        email: "vanessa.vasconcelos@ufv.br",
+                        password: bcrypt.hashSync("1234", null, null),  
+                        // use the generateHash function in our user model                        
+                    };
+
+var insertQuery = "INSERT INTO administrador (matricula, nome, sexo, email, password )" +
+                  " VALUES (?,?,?,?,?) ";
+
+connection.query(insertQuery,[newUserMysql.matricula, 
+    newUserMysql.username, newUserMysql.sex, 
+    newUserMysql.email, newUserMysql.password],
+    function (err, result) {
+        if (err) throw err;
+        console.log("1 record inserted");
+    });
 
 connection.end();

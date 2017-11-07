@@ -99,7 +99,7 @@ module.exports = function (express, passport) {
   router.get('/lista_turmas', isLoggedIn, function (req, res) {
     if (req.session.typeuser == "administrador") { 
       var query = "SELECT * FROM " + dbconfig.turmas_table; 
-      var query2 = "SELECT matricula, username FROM " + dbconfig.professores_table;  
+      var query2 = "SELECT matricula, nome FROM " + dbconfig.professores_table;  
       var query3 = "SELECT * FROM " + dbconfig.disciplinas_table;
       var listaProfessores, listaDisciplinas;
       

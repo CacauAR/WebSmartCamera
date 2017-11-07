@@ -19,9 +19,11 @@ module.exports = function(passport) {
 	// required for persistent login sessions
 	// passport needs ability to serialize and unserialize users out of session
 
+	//var matricula;
 	// used to serialize the user for the session
 	passport.serializeUser(function(user, done) {
-		done(null, user.id);
+		//matricula = user.matricula;
+		done(null, user.matricula);
 	});
 
 	// used to deserialize the user
@@ -34,7 +36,7 @@ module.exports = function(passport) {
 		else if (req.session.typeuser == "professor")
 			tableSelected = dbconfig.professores_table;
 
-		connection.query("SELECT * FROM " + tableSelected  + " WHERE matricula = ? ",[id], 
+		connection.query("SELECT * FROM " + tableSelected  + " WHERE matricula = '" + req.session.matricula + "'", 
 			function(err, rows){
 			done(err, rows[0]);
 		});
@@ -103,9 +105,13 @@ module.exports = function(passport) {
 						newUserMysql.email, newUserMysql.password],
 						function(err, rows) {
 							//pass to the session the user type to unlock rights
-							//req.session.typeuser = req.body.tipoUsuario;
+							req.session.typeuser = req.body.tipoUsuario;
+							//req.session.matricula = matricula;
 
-							newUserMysql.id = rows.insertId;
+
+							//newUserMysql.id = rows.insertId;
+							newUserMysql.id = matricula;
+
 							return done(null, false, req.flash('signupMessage', 
 							'Usuário cadastrado com sucesso.'),newUserMysql);
 					});
@@ -166,7 +172,8 @@ module.exports = function(passport) {
 
 				//pass to the session the user type to unlock rights
 				req.session.typeuser = req.body.tipoUsuario;
-				req.session.id = req.body.matricula;
+				req.session.matricula = matricula;
+
 				// all is well, return successful user
 				return done(null, rows[0]);
 			});

@@ -34,7 +34,7 @@ module.exports = function(passport) {
 		else if (req.session.typeuser == "professor")
 			tableSelected = dbconfig.professores_table;
 
-		connection.query("SELECT * FROM " + tableSelected  + " WHERE id = ? ",[id], 
+		connection.query("SELECT * FROM " + tableSelected  + " WHERE matricula = ? ",[id], 
 			function(err, rows){
 			done(err, rows[0]);
 		});
@@ -51,12 +51,12 @@ module.exports = function(passport) {
 		new LocalStrategy({
 			// by default, local strategy uses username and password, 
 			//we will override with email
-			usernameField : 'username',
+			usernameField : 'matricula',
 			passwordField : 'password',
 			passReqToCallback : true 
 			// allows us to pass back the entire request to the callback
 		},
-		function(req, username, password, done) {
+		function(req, matricula, password, done) {
 			
 			var tableSelected;
 
@@ -76,7 +76,7 @@ module.exports = function(passport) {
 			// find a user whose username is the same as the forms username
 			// we are checking to see if the user trying to login already exists
 			connection.query("SELECT * FROM " +  tableSelected  + 
-				" WHERE username = ?", [username], function(err, rows) {
+				" WHERE matricula = ?", [matricula], function(err, rows) {
 				if (err)
 					return done(err);
 				if (rows.length) {
@@ -87,7 +87,7 @@ module.exports = function(passport) {
 					// create the user
 					var newUserMysql = {
 						matricula: req.body.matricula,
-						username: username,
+						nome: req.body.nome,
 						sex: req.body.sexo,
 						email: req.body.email,
 						password: bcrypt.hashSync(password, null, null),  
@@ -95,11 +95,11 @@ module.exports = function(passport) {
 					};
 
 					var insertQuery = "INSERT INTO " +  tableSelected  + 
-						" ( matricula, username, sexo, email, password )" +
+						" ( matricula, nome, sexo, email, password )" +
 						" values (?,?,?,?,?) ";
 
 					connection.query(insertQuery,[newUserMysql.matricula, 
-						newUserMysql.username, newUserMysql.sex, 
+						newUserMysql.nome, newUserMysql.sex, 
 						newUserMysql.email, newUserMysql.password],
 						function(err, rows) {
 							//pass to the session the user type to unlock rights
@@ -125,12 +125,12 @@ module.exports = function(passport) {
 		new LocalStrategy({
 			// by default, local strategy uses username and password, 
 			//we will override with email
-			usernameField : 'username',
+			usernameField : 'matricula',
 			passwordField : 'password',
 			passReqToCallback : true 
 			// allows us to pass back the entire request to the callback
 		},
-		function(req, username, password, done) { 
+		function(req, matricula, password, done) { 
 
 			var tableSelected;
 
@@ -148,8 +148,8 @@ module.exports = function(passport) {
 			}
 
 			// callback with email and password from our form
-			connection.query("SELECT * FROM " + tableSelected  + " WHERE username = ?",
-				[username], function(err, rows){
+			connection.query("SELECT * FROM " + tableSelected  + " WHERE matricula = ?",
+				[matricula], function(err, rows){
 				if (err)
 					return done(err);
 				if (!rows.length) {
@@ -166,6 +166,7 @@ module.exports = function(passport) {
 
 				//pass to the session the user type to unlock rights
 				req.session.typeuser = req.body.tipoUsuario;
+				req.session.id = req.body.matricula;
 				// all is well, return successful user
 				return done(null, rows[0]);
 			});

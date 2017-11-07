@@ -28,6 +28,8 @@
 				/**Clear the chat window */
 				return false;				
 			});
+
+			//document.form['video'].submit();
 		
 			socket.on('chat message', function (data) {
 				console.log("tentou mandar mensagem");
@@ -47,6 +49,7 @@
 			});
 				/**Instantiate message on chat*/
 		});
+	
 		
 	</script>
 </head>
@@ -115,9 +118,9 @@
 								</ul>
 								<div class="chat-form black">
 									<textarea id="mensagem"></textarea>
-									<form action="">
+									<form id="chat" action="">
 										<button class="btn btn-warning">
-											Send message
+											Enviar
 										</button>
 									</form>
 								</div>

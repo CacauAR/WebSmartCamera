@@ -1,0 +1,120 @@
+<!-- views/matricular.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title><%= title %></title>
+	<% include ../partials/head %>			
+</head>
+<body>
+	<!-- start: Header -->
+	<% include ../partials/navbar %>				
+	<!-- end: Header -->	
+	
+	<div class="container-fluid-full">
+		<div class="row-fluid">
+		<!-- start: Main Menu -->
+		<% include ../partials/sidebar_left %>
+		<!-- end: Main Menu -->
+			
+		<!-- start: Content -->
+			<div id="content" class="span10">
+				<ul class="breadcrumb">
+					<li>
+						<i class="icon-home"></i>
+						<a href="home">Home</a>
+						<i class="icon-angle-right"></i>
+					</li>
+					<li><a href="matricular">Matricular</a></li>
+				</ul>
+
+				<!-- Cadastro de Disciplina FORM  - MELHORAR LAYOUT-->
+				<form action="/matricular" method="post">                
+					<div class="form-group">
+              <label for="codDisciplina" >Turma: </label>
+              <select class="form-control" name="codDisciplina">
+                <% for (var i in listaDeTurmas) { %>
+                  <option value="<%= listaDeTurmas[i].codigoDisciplina + " - " + listaDeTurmas[i].id %>">
+                    <%= listaDeTurmas[i].codigoDisciplina %> - 
+                    <%= listaDeTurmas[i].id %>
+                  </option>
+                <% } %>		
+              </select>
+          </div>
+          <div class="form-group">
+              <label for="codDisciplina" >Lista de Alunos: </label>
+              <select class="form-control" name="matriculaAluno">
+                <% for (var i in listaDeAlunos) { %>
+                  <option value="<%= listaDeAlunos[i].matricula %>">
+                    <%= listaDeAlunos[i].matricula %> -
+                    <%= listaDeAlunos[i].username %>
+                  </option>
+                <% } %>		
+              </select>
+					</div>
+					<button type="submit" class="btn btn-warning btn-lg">Matricular</button>
+				</form>
+
+				<% if (message == 1) { %>
+					<div class="alert alert-error">Erro na matrícula.</div>
+				<% } else if (message == 2) { %>
+					<div class="alert alert-success">Matrícula realizada com sucesso.</div>
+				<% } %>
+
+
+
+				<!-- Listar turmas no sistema -->
+				<div class="row-fluid sortable">		
+					<div class="box span12">
+						<div class="box-header" data-original-title>
+							<h2><i class="halflings-icon white user"></i><span class="break">
+								</span>Matrículas</h2>
+						</div>
+						<div class="box-content">
+							<table class="table table-striped table-bordered 
+								bootstrap-datatable datatable">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Código da disciplina</th>
+										<th>Matrícula do aluno</th>
+									</tr>
+								</thead>   
+								<tbody>
+									<% for (var i in listaDeMatriculados) { %>
+									<tr>
+										<td><%= listaDeMatriculados[i].idTurma %></td>
+                    <td><%= listaDeMatriculados[i].codigoDisciplina %></td>
+                    <td><%= listaDeMatriculados[i].matriculaAluno %></td>
+										<td class="center">
+           
+                      <a class="btn btn-danger" title="Remover" 
+                        data-rel="tooltip" href="#">
+												<i class="halflings-icon white trash"></i> 
+											</a>
+										</td>
+									</tr>		
+									<% } %>			
+								</tbody>
+
+							</table>            
+						</div>
+					</div><!--/span-->
+				
+				</div>
+			</div>				
+		</div>
+	</div>
+
+				
+		
+	<!-- start: Footer-->
+	<% include ../partials/footer %>
+	<!-- end: Footer-->
+	
+	<!-- start: JavaScript-->
+	<% include ../partials/scripts %>
+	<!-- end: JavaScript-->
+	
+</body>
+</html>

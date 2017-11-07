@@ -1,0 +1,91 @@
+<!-- views/pages/home.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Web Smart Camera Software</title>
+	<% include ../partials/head %>
+</head>
+
+<body>
+	<!-- start: Header -->
+	<% include ../partials/navbar %>
+	<!-- end: Header -->
+
+	<div class="container-fluid-full">
+		<div class="row-fluid">
+
+			<!-- start: Main Menu -->
+			<% include ../partials/sidebar_left %>
+			<!-- end: Main Menu -->
+
+			<!-- start: Content -->
+			<div id="content" class="span10">
+				<ul class="breadcrumb">
+					<li>
+						<i class="icon-home"></i>
+						<a href="home">Home</a>
+						<i class="icon-angle-right"></i> 
+						<li><a href="#">Video Chat</a></li>
+					</ul>
+
+
+					<!--Lista turmas para transmitir-->
+
+					<form action="/video" method="post" id="video">                
+						<div class="form-group">
+							<label for="codDisciplina" >Turmas: </label>
+							<select class="form-control" name="codDisciplina">
+								<% for (var i in listaTurmas) { %>
+								<option value="<%= listaTurmas[i].codigo %>">
+									<%= listaTurmas[i].codigoDisciplina %> - 
+									<%= listaTurmas[i].id %>
+								</option>
+								<% } %>		
+							</select>
+						</div>
+						<button id="transmitir" type="submit"class="btn btn-warning btn-lg" >Transmitir </button>
+
+						<h1>   </h1>
+
+						<div class="row-fluid">
+						<!--start: VIDEO KIM EDISON -->
+						<div class="box black span6 noMargin" onTablet="span6" 
+						onDesktop="span8">
+						<div class="box-header">
+							<h2><i class="halflings-icon white list"></i>
+								<span class="break"></span>Video Transmission</h2>
+							</div>
+							<div class="box-content">
+
+
+								<canvas id="video-canvas"></canvas>
+								<script type="text/javascript" src="jsmpeg.min.js"></script>
+								<script type="text/javascript">
+								var canvas = document.getElementById('video-canvas');
+								var url = 'ws://'+document.location.hostname+':8082/';
+								var player = new JSMpeg.Player(url, {canvas: canvas});
+								</script>
+
+
+							</div>
+						</div>
+						<!--end: VIDEO KIM EDISON -->
+						
+					</div>
+
+				</div><!--end: Content.span10-->
+			</div>
+			<!-- end: row-fluid -->
+		</div>
+		<!--/Container-fluid-->
+
+
+
+		<% include ../partials/footer %>
+		<!-- start: JavaScript-->
+		<% include ../partials/scripts %>
+		<!-- end: JavaScript-->
+
+	</body>
+	</html>

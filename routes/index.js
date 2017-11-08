@@ -127,8 +127,8 @@ module.exports = function (express, passport) {
   // processa o formulário de cadastro de turmas
   router.post('/lista_turmas', function (req, res) {
     var query =  "INSERT INTO " + dbconfig.turmas_table + 
-      " (matriculaProfessor, codigoDisciplina) VALUES (?,?)"; 
-    var params = [req.body.matriculaProf, req.body.codDisciplina];
+      " (id,matriculaProfessor, codigoDisciplina) VALUES (?,?,?)"; 
+    var params = [req.body.idturma,req.body.matriculaProf, req.body.codDisciplina];
     queryFile.data.insertSQLquery(query, params, function (result){     
       req.flash('info', result);      
       res.redirect('/lista_turmas');
@@ -155,19 +155,20 @@ module.exports = function (express, passport) {
 
 
   router.get('/matricular', isLoggedIn, function (req, res) {
-    if (req.session.typeuser == "administrador") { 
-      var query2 = "SELECT codigoDisciplina, id FROM " + dbconfig.turmas_table; 
+    if (req.session.typeuser == "administrador") {       
       //var query2 = "SELECT matricula, username FROM " + dbconfig.professores_table;  
-      var query = "SELECT matricula, username FROM " + dbconfig.alunos_table;
+      var query = "SELECT matricula, nome FROM " + dbconfig.alunos_table;
+      var query2 = "SELECT codigoDisciplina, id FROM " + dbconfig.turmas_table; 
       var query3 = "SELECT idTurma, matriculaAluno, codigoDisciplina FROM " + dbconfig.turma_aluno_table;
       var listaTurmas, listaAlunos;
-         
-      queryFile.data.selectSQLquery(query2, function (result){
-        listaTurmas = result;
-      });
+
       queryFile.data.selectSQLquery(query, function (result){
         listaAlunos = result;
       });
+         
+      queryFile.data.selectSQLquery(query2, function (result){
+        listaTurmas = result;
+      });     
 
       queryFile.data.selectSQLquery(query3, function (result) {
         res.render('pages/matricular', {

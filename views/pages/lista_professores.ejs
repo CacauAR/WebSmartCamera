@@ -51,7 +51,6 @@
 								bootstrap-datatable datatable">
 												<thead>
 													<tr>
-														<th>ID</th>
 														<th>Nome</th>
 														<th>Matrícula</th>
 														<th>Email</th>
@@ -60,8 +59,7 @@
 												<tbody>
 													<% for (var i in lista) { %>
 														<tr>
-															<td><%= lista[i].id %></td>
-															<td><%= lista[i].username %></td>
+															<td><%= lista[i].nome %></td>
 															<td><%= lista[i].matricula %></td>
 															<td><%= lista[i].email %></td>
 															<td class="center">

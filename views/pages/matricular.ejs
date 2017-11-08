@@ -31,7 +31,7 @@
 				<!-- Cadastro de Disciplina FORM  - MELHORAR LAYOUT-->
 				<form action="/matricular" method="post">                
 					<div class="form-group">
-              <label for="codDisciplina" >Turma: </label>
+              <label for="codDisciplina" >Código Disciplina - ID Turma: </label>
               <select class="form-control" name="codDisciplina">
                 <% for (var i in listaDeTurmas) { %>
                   <option value="<%= listaDeTurmas[i].codigoDisciplina + " - " + listaDeTurmas[i].id %>">
@@ -47,7 +47,7 @@
                 <% for (var i in listaDeAlunos) { %>
                   <option value="<%= listaDeAlunos[i].matricula %>">
                     <%= listaDeAlunos[i].matricula %> -
-                    <%= listaDeAlunos[i].username %>
+                    <%= listaDeAlunos[i].nome %>
                   </option>
                 <% } %>		
               </select>

@@ -3,7 +3,7 @@ module.exports = {
     'connection': {
         'host': 'localhost',
         'user': 'root',
-        'password': 'raspberry'
+        'password': 'root'
     },
 	'database': 'testedatabase3',
     'admin_table': 'administrador',

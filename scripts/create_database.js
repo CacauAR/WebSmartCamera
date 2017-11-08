@@ -90,23 +90,20 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.turma_aluno_table + '` ( 
 
 
 console.log('Success: Database Created!')
-connection.end();
 
-
-var connection = mysql.createConnection(dbconfig.connection);
 connection.query('USE ' + dbconfig.database); 
 
 var newUserMysql = {
-                        matricula: "es00001",
-                        username: "root",
-                        sex: "F",
-                        email: "vanessa.vasconcelos@ufv.br",
-                        password: bcrypt.hashSync("1234", null, null),  
-                        // use the generateHash function in our user model                        
-                    };
+    matricula: "es00001",
+    username: "root",
+    sex: "F",
+    email: "vanessa.vasconcelos@ufv.br",
+    password: bcrypt.hashSync("123", null, null),  
+   // use the generateHash function in our user model                        
+};
 
-var insertQuery = "INSERT INTO administrador (matricula, nome, sexo, email, password )" +
-                  " VALUES (?,?,?,?,?) ";
+var insertQuery = "INSERT INTO "+ dbconfig.admin_table + 
+    " (matricula, nome, sexo, email, password ) VALUES (?,?,?,?,?) ";
 
 connection.query(insertQuery,[newUserMysql.matricula, 
     newUserMysql.username, newUserMysql.sex, 

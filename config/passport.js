@@ -19,15 +19,29 @@ module.exports = function(passport) {
 	// required for persistent login sessions
 	// passport needs ability to serialize and unserialize users out of session
 
-	//var matricula;
 	// used to serialize the user for the session
+	/* 
+		OBS: serializeUser determines, which data of the user object should be 
+		stored in the session. The result of the serializeUser method is attached to
+		the session as req.session.passport.user = {}.
+	*/
+
 	passport.serializeUser(function(user, done) {
-		//matricula = user.matricula;
+		//console.log("Serializou o usuario de matricula: " + user.matricula);
 		done(null, user.matricula);
 	});
 
+	/* 
+		OBS: The first argument of deserializeUser corresponds to the key of the user 
+		object that was given to the done function (serialize). So your whole object is
+		retrieved with help of that key. That key here is the user id (key can be 
+		any key of the user object i.e. name,email etc). In deserializeUser that key
+		is matched with the in memory array / database or any data resource.
+		The fetched object is attached to the request object as req.user
+	*/
+
 	// used to deserialize the user
-	passport.deserializeUser(function(req,id, done) {
+	passport.deserializeUser(function(req,key, done) {
 		var tableSelected;
 		if (req.session.typeuser == "aluno") 
 			tableSelected = dbconfig.alunos_table;
@@ -36,8 +50,9 @@ module.exports = function(passport) {
 		else if (req.session.typeuser == "professor")
 			tableSelected = dbconfig.professores_table;
 
-		connection.query("SELECT * FROM " + tableSelected  + " WHERE matricula = '" + req.session.matricula + "'", 
+		connection.query("SELECT * FROM " + tableSelected  + " WHERE matricula = '" + key + "'", 
 			function(err, rows){
+			//console.log("deserializou o usuario de matricula: " + key);
 			done(err, rows[0]);
 		});
 	});
@@ -104,16 +119,8 @@ module.exports = function(passport) {
 						newUserMysql.nome, newUserMysql.sex, 
 						newUserMysql.email, newUserMysql.password],
 						function(err, rows) {
-							//pass to the session the user type to unlock rights
-							req.session.typeuser = req.body.tipoUsuario;
-							//req.session.matricula = matricula;
-
-
-							//newUserMysql.id = rows.insertId;
-							newUserMysql.id = matricula;
-
 							return done(null, false, req.flash('signupMessage', 
-							'Usuário cadastrado com sucesso.'),newUserMysql);
+							'Usuário cadastrado com sucesso.'));
 					});
 				}
 			});
@@ -173,6 +180,7 @@ module.exports = function(passport) {
 				//pass to the session the user type to unlock rights
 				req.session.typeuser = req.body.tipoUsuario;
 				req.session.matricula = matricula;
+				console.log("Matricula selecionada para sessão: " + matricula);
 
 				// all is well, return successful user
 				return done(null, rows[0]);

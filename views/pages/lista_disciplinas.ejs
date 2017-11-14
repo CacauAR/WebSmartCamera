@@ -1,5 +1,4 @@
-<!-- views/lista_disciplinas.ejs -->
-
+<!-- views/pages/lista_disciplinas.ejs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,17 +6,10 @@
 	<% include ../partials/head %>			
 </head>
 <body>
-	<!-- start: Header -->
 	<% include ../partials/navbar %>				
-	<!-- end: Header -->	
-	
 	<div class="container-fluid-full">
 		<div class="row-fluid">
-		<!-- start: Main Menu -->
-		<% include ../partials/sidebar_left %>
-		<!-- end: Main Menu -->
-			
-		<!-- start: Content -->
+			<% include ../partials/sidebar_left %>
 			<div id="content" class="span10">
 				<ul class="breadcrumb">
 					<li>
@@ -42,6 +34,7 @@
 					<button type="submit" class="btn btn-warning btn-lg">Cadastrar</button>
 				</form>
 
+				<!-- show any messages that come back with authentication -->
 				<% if (message == 1) { %>
 					<div class="alert alert-error">Erro ao tentar adicionar disciplina.</div>
 				<% } else if (message == 2) { %>
@@ -81,23 +74,14 @@
 									</tr>		
 									<% } %>			
 								</tbody>
-
 							</table>            
 						</div>
-					</div><!--/span-->
-				
+					</div>				
 				</div>
 			</div>				
 		</div>
 	</div>
-		
-	<!-- start: Footer-->
 	<% include ../partials/footer %>
-	<!-- end: Footer-->
-	
-	<!-- start: JavaScript-->
 	<% include ../partials/scripts %>
-	<!-- end: JavaScript-->
-	
 </body>
 </html>

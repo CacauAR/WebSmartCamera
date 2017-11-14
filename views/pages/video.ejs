@@ -1,18 +1,16 @@
 <!-- views/pages/home.ejs -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 	<title>Web Smart Camera Software</title>
 	<% include ../partials/head %>
 	<script src="/socket.io/socket.io.js"></script><!--NAO MUDAR!!-->
 	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 	<script>			
-		var user = '<%= user.username %>';
+		var user = '<%= user.nome %>';
 		var data;
 
 		$(function () {					
-
 			var socket = io();		
 			socket.emit('adduser', user);
 			
@@ -28,14 +26,11 @@
 				/**Clear the chat window */
 				return false;				
 			});
-
-			//document.form['video'].submit();
-		
 			socket.on('chat message', function (data) {
 				console.log("tentou mandar mensagem");
 				var message_box = 
 						'<li class="left">' 
-						+ '<img class="avatar" alt="' + data.username + '" src="/public/img/avatar.jpg">'
+						+ '<img class="avatar" alt="' + data.username + '" src="/public/img/avatar.png">'
 						+ '<span class="message">'
 							+ '<span class="arrow"></span>'	
 							+ '<span class="from">' + data.username + '</span>'
@@ -53,94 +48,80 @@
 		
 	</script>
 </head>
-
 <body>
-	<!-- start: Header -->
 	<% include ../partials/navbar %>
-	<!-- end: Header -->
-
 	<div class="container-fluid-full">
 		<div class="row-fluid">
-
-			<!-- start: Main Menu -->
 			<% include ../partials/sidebar_left %>
-			<!-- end: Main Menu -->
-
-			<!-- start: Content -->
 			<div id="content" class="span10">
 				<ul class="breadcrumb">
 					<li>
 						<i class="icon-home"></i>
 						<a href="home">Home</a>
 						<i class="icon-angle-right"></i> 
-						<li><a href="#">Video Chat</a></li>
-					</ul>
+					</li>
+					<li><a href="#">Video Chat</a></li>
+				</ul>
+				
+				<div class="row-fluid">				
 
-					<div class="row-fluid">
-						<!--start: VIDEO KIM EDISON -->
-						<div class="box black span6 noMargin" onTablet="span6" 
+					<!--start: VIDEO KIM EDISON -->
+					<div class="box black span6 noMargin" onTablet="span6" 
 						onDesktop="span8">
 						<div class="box-header">
 							<h2><i class="halflings-icon white list"></i>
-								<span class="break"></span>Video Transmission</h2>
-							</div>
-							<div class="box-content">
-
-
-								<canvas id="video-canvas"></canvas>
-								<script type="text/javascript" src="jsmpeg.min.js"></script>
-								<script type="text/javascript">
+							<span class="break"></span>Video Transmission</h2>
+						</div>
+						<div class="box-content">
+							<canvas id="video-canvas"></canvas>
+							<script type="text/javascript" src="jsmpeg.min.js"></script>
+							<script type="text/javascript">
 								var canvas = document.getElementById('video-canvas');
 								var url = 'ws://'+document.location.hostname+':8082/';
 								var player = new JSMpeg.Player(url, {canvas: canvas});
-								</script>
-
-
-							</div>
+							</script>
 						</div>
-						<!--end: VIDEO KIM EDISON -->
+						<div align="right"> 
+							<% if (tipoUsuario == "professor") { %>
+								<button class="btn btn-warning" > Encerrar </button>
+							<% } %>
+						</div>
+					</div>
+					<!--end: VIDEO KIM EDISON -->
 
-						<!-- start: CHAT -->
-						<div class="box black span6" onTablet="span6" 
+					<!-- start: CHAT -->
+					<div class="box black span6" onTablet="span6" 
 						onDesktop="span4">
 						<div class="box-header">
 							<h2><i class="halflings-icon white comment"></i>
-								<span class="break"></span>Chat Metro</h2>
-								<div class="box-icon">
-									<a href="#" class="btn-minimize">
-										<i class="halflings-icon white chevron-up"></i>
-									</a>
-								</div>
-							</div>
-							<div class="box-content">
-								<ul class="chat metro yellow" id="messages" style="overflow-y: scroll; height: 400px;">
-									<!-- Mensagens geradas no chat -->
-								</ul>
-								<div class="chat-form black">
-									<textarea id="mensagem"></textarea>
-									<form id="chat" action="">
-										<button class="btn btn-warning">
-											Enviar
-										</button>
-									</form>
-								</div>
+								<span class="break"></span>Chat Metro
+							</h2>
+							<div class="box-icon">
+								<a href="#" class="btn-minimize">
+									<i class="halflings-icon white chevron-up"></i>
+								</a>
 							</div>
 						</div>
-						<!-- end: CHAT -->
+						<div class="box-content">
+							<ul class="chat metro yellow" id="messages" style="overflow-y: scroll; height: 400px;">
+								<!-- Mensagens geradas no chat -->
+							</ul>
+							<div class="chat-form black">
+								<textarea id="mensagem"></textarea>
+								<form id="chat" action="">
+									<button class="btn btn-warning"> Enviar </button>
+								</form>
+							</div>
+						</div>
 					</div>
+					<!-- end: CHAT -->
+					
+				</div>
 
-				</div><!--end: Content.span10-->
 			</div>
-			<!-- end: row-fluid -->
 		</div>
-		<!--/Container-fluid-->
-
-
-
-		<% include ../partials/footer %>
-		<!-- start: JavaScript-->
-		<% include ../partials/scripts %>
-		<!-- end: JavaScript-->
-
-	</body>
-	</html>
+	</div>
+	<% include ../partials/footer %>		
+	<% include ../partials/scripts %>
+</body>
+</html>

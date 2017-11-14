@@ -1,5 +1,4 @@
-<!-- views/matricular.ejs -->
-
+<!-- views/pages/matricular.ejs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,17 +6,10 @@
 	<% include ../partials/head %>			
 </head>
 <body>
-	<!-- start: Header -->
 	<% include ../partials/navbar %>				
-	<!-- end: Header -->	
-	
 	<div class="container-fluid-full">
 		<div class="row-fluid">
-		<!-- start: Main Menu -->
-		<% include ../partials/sidebar_left %>
-		<!-- end: Main Menu -->
-			
-		<!-- start: Content -->
+			<% include ../partials/sidebar_left %>
 			<div id="content" class="span10">
 				<ul class="breadcrumb">
 					<li>
@@ -31,37 +23,37 @@
 				<!-- Cadastro de Disciplina FORM  - MELHORAR LAYOUT-->
 				<form action="/matricular" method="post">                
 					<div class="form-group">
-              <label for="codDisciplina" >Código Disciplina - ID Turma: </label>
-              <select class="form-control" name="codDisciplina">
-                <% for (var i in listaDeTurmas) { %>
-                  <option value="<%= listaDeTurmas[i].codigoDisciplina + " - " + listaDeTurmas[i].id %>">
-                    <%= listaDeTurmas[i].codigoDisciplina %> - 
-                    <%= listaDeTurmas[i].id %>
-                  </option>
-                <% } %>		
-              </select>
+            <label for="codDisciplina" >Código Disciplina - ID Turma: </label>
+            <select class="form-control" name="codDisciplina">
+              <% for (var i in listaDeTurmas) { %>
+								<option value="<%= listaDeTurmas[i].codigoDisciplina + " - "
+							  	+ listaDeTurmas[i].id %>">
+                  <%= listaDeTurmas[i].codigoDisciplina %> - 
+                  <%= listaDeTurmas[i].id %>
+                </option>
+              <% } %>		
+            </select>
           </div>
           <div class="form-group">
-              <label for="codDisciplina" >Lista de Alunos: </label>
-              <select class="form-control" name="matriculaAluno">
-                <% for (var i in listaDeAlunos) { %>
-                  <option value="<%= listaDeAlunos[i].matricula %>">
-                    <%= listaDeAlunos[i].matricula %> -
-                    <%= listaDeAlunos[i].nome %>
-                  </option>
-                <% } %>		
-              </select>
+            <label for="codDisciplina" >Lista de Alunos: </label>
+            <select class="form-control" name="matriculaAluno">
+              <% for (var i in listaDeAlunos) { %>
+                <option value="<%= listaDeAlunos[i].matricula %>">
+                  <%= listaDeAlunos[i].matricula %> -
+                  <%= listaDeAlunos[i].nome %>
+                </option>
+              <% } %>		
+            </select>
 					</div>
 					<button type="submit" class="btn btn-warning btn-lg">Matricular</button>
 				</form>
 
+				<!-- show any messages that come back with authentication -->
 				<% if (message == 1) { %>
 					<div class="alert alert-error">Erro na matrícula.</div>
 				<% } else if (message == 2) { %>
 					<div class="alert alert-success">Matrícula realizada com sucesso.</div>
 				<% } %>
-
-
 
 				<!-- Listar turmas no sistema -->
 				<div class="row-fluid sortable">		
@@ -75,46 +67,34 @@
 								bootstrap-datatable datatable">
 								<thead>
 									<tr>
-										<th>ID</th>
+										<th>ID Turma</th>
 										<th>Código da disciplina</th>
 										<th>Matrícula do aluno</th>
 									</tr>
 								</thead>   
 								<tbody>
 									<% for (var i in listaDeMatriculados) { %>
-									<tr>
-										<td><%= listaDeMatriculados[i].idTurma %></td>
-                    <td><%= listaDeMatriculados[i].codigoDisciplina %></td>
-                    <td><%= listaDeMatriculados[i].matriculaAluno %></td>
-										<td class="center">
-           
-                      <a class="btn btn-danger" title="Remover" 
-                        data-rel="tooltip" href="#">
-												<i class="halflings-icon white trash"></i> 
-											</a>
-										</td>
-									</tr>		
+										<tr>
+											<td><%= listaDeMatriculados[i].idTurma %></td>
+                 	   <td><%= listaDeMatriculados[i].codigoDisciplina %></td>
+                 	   <td><%= listaDeMatriculados[i].matriculaAluno %></td>
+											<td class="center">           
+                   	  	<a class="btn btn-danger" title="Remover" 
+                    	    data-rel="tooltip" href="#">
+													<i class="halflings-icon white trash"></i> 
+												</a>
+											</td>
+										</tr>		
 									<% } %>			
 								</tbody>
-
 							</table>            
 						</div>
-					</div><!--/span-->
-				
+					</div>				
 				</div>
 			</div>				
 		</div>
 	</div>
-
-				
-		
-	<!-- start: Footer-->
 	<% include ../partials/footer %>
-	<!-- end: Footer-->
-	
-	<!-- start: JavaScript-->
 	<% include ../partials/scripts %>
-	<!-- end: JavaScript-->
-	
 </body>
 </html>

@@ -9,7 +9,7 @@ connection.query('CREATE DATABASE ' + dbconfig.database);
 connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.admin_table + '` ( \
     `matricula` VARCHAR (7) NOT NULL, \
-    `nome` VARCHAR(20) NOT NULL, \
+    `nome` VARCHAR(80) NOT NULL, \
     `sexo` CHAR(1), \
     `email` VARCHAR(100), \
     `password` CHAR(60) NOT NULL, \
@@ -22,7 +22,7 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.admin_table + '` ( \
 connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.alunos_table + '` ( \
     `matricula` VARCHAR (7) NOT NULL, \
-    `nome` VARCHAR(20) NOT NULL, \
+    `nome` VARCHAR(80) NOT NULL, \
     `sexo` CHAR(1), \
     `email` VARCHAR(100), \
     `password` CHAR(60) NOT NULL, \
@@ -34,7 +34,7 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.alunos_table + '` ( \
 connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.professores_table + '` ( \
     `matricula` VARCHAR(7) NOT NULL, \
-    `nome` VARCHAR(20) NOT NULL, \
+    `nome` VARCHAR(80) NOT NULL, \
     `sexo` CHAR(1), \
     `email` VARCHAR(100), \
     `password` CHAR(60) NOT NULL, \
@@ -56,7 +56,7 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.disciplinas_table + '` ( 
 
 connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.turmas_table + '` ( \
-    `id` INT NOT NULL, \
+    `id` INT NOT NULL AUTO_INCREMENT, \
     `matriculaProfessor` VARCHAR (7) NOT NULL, \
     `codigoDisciplina` CHAR(6) NOT NULL, \
         PRIMARY KEY (`id`, `codigoDisciplina`), \
@@ -68,7 +68,6 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.turmas_table + '` ( \
         REFERENCES `' + dbconfig.database + '`.`'+ dbconfig.disciplinas_table + '` (`codigo`) \
         ON DELETE CASCADE ON UPDATE CASCADE \
 )');
-
 
 connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.turma_aluno_table + '` ( \
@@ -90,27 +89,26 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.turma_aluno_table + '` ( 
 
 
 console.log('Success: Database Created!')
-
 connection.query('USE ' + dbconfig.database); 
 
 var newUserMysql = {
-    matricula: "es00001",
-    username: "root",
-    sex: "F",
-    email: "vanessa.vasconcelos@ufv.br",
-    password: bcrypt.hashSync("123", null, null),  
-   // use the generateHash function in our user model                        
-};
+                        matricula: "es00001",
+                        username: "root",
+                        sex: "F",
+                        email: "vanessa.vasconcelos@ufv.br",
+                        password: bcrypt.hashSync("123", null, null),  
+                        // use the generateHash function in our user model                        
+                    };
 
-var insertQuery = "INSERT INTO "+ dbconfig.admin_table + 
-    " (matricula, nome, sexo, email, password ) VALUES (?,?,?,?,?) ";
+var insertQuery = "INSERT INTO administrador (matricula, nome, sexo, email, password )" +
+                  " VALUES (?,?,?,?,?) ";
 
 connection.query(insertQuery,[newUserMysql.matricula, 
     newUserMysql.username, newUserMysql.sex, 
     newUserMysql.email, newUserMysql.password],
     function (err, result) {
         if (err) throw err;
-        console.log("1 record inserted");
+        console.log("Administrador es00001 inserted");
     });
 
 connection.end();

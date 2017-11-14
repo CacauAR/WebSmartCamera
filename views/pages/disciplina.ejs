@@ -1,0 +1,93 @@
+<!-- views/pages/disciplina.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title><%= title %></title>
+	<% include ../partials/head %>
+</head>
+<body>
+	<% include ../partials/navbar %>
+	<div class="container-fluid-full">
+		<div class="row-fluid">
+			<% include ../partials/sidebar_left %>
+			<div id="content" class="span10">
+				<ul class="breadcrumb">
+					<li>
+						<i class="icon-home"></i>
+						<a href="home">Home</a>
+						<i class="icon-angle-right"></i>
+					</li>
+					<li><a href="#"> <%= lista[0].codigoDisciplina %> </a></li>
+				</ul>
+				<div class="row-fluid">
+					<div class="span12">
+						<% if (tipoUsuario == "aluno") { %>
+							<h1><%= lista[0].nomeDisciplina %> - Turma <%= lista[0].idTurma %></h1>
+						<% } else if (tipoUsuario == "professor") { %>
+							<h1><%= lista[0].nomeDisciplina %> - Turma <%= lista[0].id %> </h1>
+						<% }%>
+						<div class="priority high"><span><h4>Aulas ao Vivo</h4></span></div>
+						<div class="task high">
+							<div class="desc">
+								<% if (tipoUsuario == "professor") { %>
+									<div class="title"><a href="/video">Iniciar transmissão</div>
+								<% } else if (tipoUsuario == "aluno") { %>
+									<div class="title"><a href= "/video">Assistir</div>
+								<% }%>
+							</div>
+						</div>
+						<div class="priority medium"><span><h4>Aulas Online</h4></span></div>
+						<div class="task medium">
+							<div class="desc">
+								<div class="title"><a href= <%="/"+ lista[0].codigoDisciplina+"?aula=1"%> >
+									Aula 1 - Carga Elétrica e Campo Elétrico</a>
+								</div>
+								<div>Neque porro quisquam est qui, consectetur, adipisci velit</div>
+							</div>
+							<div class="time">
+								<div class="date">Jun 1, 2012</div>
+								<div> 1 day</div>
+							</div>
+						</div>
+						<div class="task medium last">
+							<div class="desc">
+								<div class="title"><a href=<%="/"+ lista[0].codigoDisciplina+"?aula=1"%>>
+									Aula 2 - Lei de Gauss</a>
+								</div>
+								<div>Neque porro quisquam est qui, consectetur, adipisci velit</div>
+							</div>
+							<div class="time">
+								<div class="date">Jun 1, 2012</div>
+								<div> 1 day</div>
+							</div>
+						</div>
+						<div class="priority low"><span><h3>Material Didático</h3></span></div>
+						<div class="task low">
+							<div class="desc">
+								<div class="title">Lorem Ipsum</div>
+								<div>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit</div>
+							</div>
+							<div class="time">
+								<div class="date">Jun 1, 2012</div>
+								<div> 1 day</div>
+							</div>
+						</div>
+						<div class="task low">
+							<div class="desc">
+								<div class="title">Lorem Ipsum</div>
+								<div>Neque porro quisquam est qui, consectetur, adipisci velit</div>
+							</div>
+							<div class="time">
+								<div class="date">Jun 1, 2012</div>
+								<div> 1 day</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<% include ../partials/footer %>
+	<% include ../partials/scripts %>
+</body>
+</html>

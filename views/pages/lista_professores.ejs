@@ -1,95 +1,77 @@
 <!-- views/pages/lista_professores.ejs -->
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-	<title>
-		<%= title %>
-	</title>
+	<title><%= title %></title>
 	<% include ../partials/head %>
 </head>
-
 <body>
-	<!-- start: Header -->
 	<% include ../partials/navbar %>
-		<!-- end: Header -->
+	<div class="container-fluid-full">
+		<div class="row-fluid">
+			<% include ../partials/sidebar_left %>
+			<div id="content" class="span10">
+				<ul class="breadcrumb">
+					<li>
+						<i class="icon-home"></i>
+						<a href="home">Home</a>
+						<i class="icon-angle-right"></i>
+					</li>
+					<li>
+						<a href="lista_professores">Lista de Professores Cadastrados</a>
+					</li>
+				</ul>
+				<button class="btn btn-large btn-warning">
+					<a href="signup">Cadastrar Professor</a>
+				</button>
+				<hr>
 
-		<div class="container-fluid-full">
-			<div class="row-fluid">
-				<!-- start: Main Menu -->
-				<% include ../partials/sidebar_left %>
-					<!-- end: Main Menu -->
-
-					<!-- start: Content -->
-					<div id="content" class="span10">
-						<ul class="breadcrumb">
-							<li>
-								<i class="icon-home"></i>
-								<a href="home">Home</a>
-								<i class="icon-angle-right"></i>
-							</li>
-							<li>
-								<a href="lista_professores">Lista de Professores Cadastrados</a>
-							</li>
-						</ul>
-
-						<button class="btn btn-large btn-warning">
-							<a href="signup">Cadastrar Professor</a>
-						</button>
-						<hr>
-						<!-- Listar disciplinas no sistema -->
-								<div class="row-fluid sortable">
-									<div class="box span12">
-										<div class="box-header" data-original-title>
-											<h2>
-												<i class="halflings-icon white user"></i>
-												<span class="break"></span>Professores Cadastrados</h2>
-										</div>
-										<div class="box-content">
-											<table class="table table-striped table-bordered 
+				<!-- Listar disciplinas no sistema -->
+				<div class="row-fluid sortable">
+					<div class="box span12">
+						<div class="box-header" data-original-title>
+							<h2>
+								<i class="halflings-icon white user"></i>
+								<span class="break"></span>Professores Cadastrados</h2>
+						</div>
+						<div class="box-content">
+							<table class="table table-striped table-bordered 
 								bootstrap-datatable datatable">
-												<thead>
-													<tr>
-														<th>Nome</th>
-														<th>Matrícula</th>
-														<th>Email</th>
-													</tr>
-												</thead>
-												<tbody>
-													<% for (var i in lista) { %>
-														<tr>
-															<td><%= lista[i].nome %></td>
-															<td><%= lista[i].matricula %></td>
-															<td><%= lista[i].email %></td>
-															<td class="center">
-																<a class="btn btn-info" title="Editar" 
-																	data-rel="tooltip" href="#">
-																	<i class="halflings-icon white edit"></i>
-																</a>
-																<a class="btn btn-danger" title="Remover" 
-																	data-rel="tooltip" href="#">
-																	<i class="halflings-icon white trash"></i>
-																</a>
-															</td>
-														</tr>
-														<% } %>
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
+								<thead>
+									<tr>
+										<th>Nome</th>
+										<th>Matrícula</th>
+										<th>Email</th>
+									</tr>
+								</thead>
+								<tbody>
+									<% for (var i in lista) { %>
+										<tr>
+											<td><%= lista[i].nome %></td>
+											<td><%= lista[i].matricula %></td>
+											<td><%= lista[i].email %></td>
+											<td class="center">
+												<a class="btn btn-info" title="Editar" 
+													data-rel="tooltip" href="#">
+													<i class="halflings-icon white edit"></i>
+												</a>
+												<a class="btn btn-danger" title="Remover" 
+													data-rel="tooltip" href="#">
+													<i class="halflings-icon white trash"></i>
+												</a>
+											</td>
+										</tr>
+									<% } %>
+								</tbody>
+							</table>
+						</div>
 					</div>
-			</div>
+				</div>
+
+			</div>			
 		</div>
-
-		<!-- start: Footer-->
-		<% include ../partials/footer %>
-		<!-- end: Footer-->
-
-		<!-- start: JavaScript-->
-		<% include ../partials/scripts %>
-		<!-- end: JavaScript-->
-
+	</div>
+	<% include ../partials/footer %>
+	<% include ../partials/scripts %>
 </body>
 </html>

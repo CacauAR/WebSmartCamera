@@ -22,34 +22,30 @@ var methods = {};
     console.log ('Chamou query de insert');  
     var message;
     connection.query(sqlQuery, params, function (error, rows, fields) {
-        if (error) {message = 1; console.log(error);} // mostra a mensagem de erro na página
-        else message = 2;       // mostra a mensagem de sucesso na página
+        if (error) {message = 1; console.log(error);} 
+        // mostra a mensagem de erro na página
+        else message = 2;  // mostra a mensagem de sucesso na página
         callback(message);        
+    });
+  }
+
+  methods.deleteSQLquery = function (sqlQuery, params, callback) {
+    var message;
+    console.log('Chamou query de deletar');
+    connection.query(sqlQuery, params, function (error, rows, fields){
+      if (error) {message = 3; console.log(error);} 
+      // mostra a mensagem de erro na página
+      else message = 4; // mostra a mensagem de sucesso na página
+      callback (message);
     });
   }
 
   methods.alterSQLquery  = function (sqlQuery, callback) {     
     console.log ('Chamou query de alterar');
-    /*
-    ALTER TABLE - ADD Column:
-    ALTER TABLE employees
-    ADD last_name VARCHAR(50);
-
-    ALTER TABLE - DROP COLUMN:
-    ALTER TABLE table_name
-    DROP COLUMN column_name;
-
-    ALTER TABLE - ALTER/MODIFY COLUMN
-    ALTER TABLE employees
-    ALTER COLUMN last_name VARCHAR(75) NOT NULL;
-    */  
     connection.query(sqlQuery, function (error, rows, fields) {
       if (error) return console.log(error);
       callback (rows);
     });   
-  }
+  } 
 
- 
-
-exports.data = methods;
-  
+exports.data = methods;  

@@ -39,6 +39,10 @@
 					<div class="alert alert-error">Erro ao tentar adicionar disciplina.</div>
 				<% } else if (message == 2) { %>
 					<div class="alert alert-success">Disciplina adicionada com sucesso.</div>
+				<% } else if (message == 3) { %>
+					<div class="alert alert-error">Erro ao tentar remover disciplina.</div>
+				<% } else if (message == 4) { %>
+					<div class="alert alert-success">Disciplina removida com sucesso.</div>
 				<% } %>
 
 				<!-- Listar disciplinas no sistema -->
@@ -60,18 +64,24 @@
 								</thead>   
 								<tbody>
 									<% for (var i in lista) { %>
-									<tr>
-										<td><%= lista[i].codigo %></td>
-										<td><%= lista[i].nomeDisciplina %></td>
-										<td class="center">
-											<a class="btn btn-info" title="Editar" data-rel="tooltip" href="#">
-												<i class="halflings-icon white edit"></i>  
+									<tr id="rowDis<%= lista[i].codigo %>">
+										<td id="rowCode"><%= lista[i].codigo %></td>
+										<td id="rowName"><%= lista[i].nomeDisciplina %></td>
+										<td class="center" id="rowConfig">
+											<a id="edit_button" class="btn btn-info" title="Editar" 
+												data-rel="tooltip" href="#">
+													<i class="halflings-icon white edit"></i>  
 											</a>
-											<a class="btn btn-danger" title="Remover" data-rel="tooltip" href="#">
-												<i class="halflings-icon white trash"></i> 
+											<a data-id="<%= lista[i].codigo %>" data-target="#myModal"
+												class="btn btn-danger btn-setting remove_modal" 
+												title="Remover" data-rel="tooltip" href="#">
+													<i class="halflings-icon white trash"></i> 
 											</a>
 										</td>
-									</tr>		
+									</tr>	
+									<!-- Formulario fantasma para passar o id da disciplina que
+										quer deletar -->
+									<div id="hidden_form_container" style="display:none;"></div>	
 									<% } %>			
 								</tbody>
 							</table>            
@@ -81,7 +91,26 @@
 			</div>				
 		</div>
 	</div>
+
+	<!--JANELA POP-UP (Modal Box) PARA OPÇÃO DE REMOÇÃO DE DISCIPLINA-->
+	<div class="modal hide fade" id="myModal">
+		<div class="modal-header">
+			<h3>Notificação</h3>
+		</div>
+		<div class="modal-body">
+			<p><b>Tem certeza que quer deletar a disciplina? </b></p>
+			<p id="disID">Teste</p>
+		</div>
+		<div class="modal-footer">
+			<button type="button" href="#" class="btn" data-dismiss="modal">Fechar</button>
+			<button id="savebutton" href="#" type="submit" class="btn btn-danger" 
+				data-dismiss="modal">Sim</button>
+		</div>
+	</div>
+
 	<% include ../partials/footer %>
 	<% include ../partials/scripts %>
+	<% include ../partials/script_delete_row %>
+	
 </body>
 </html>

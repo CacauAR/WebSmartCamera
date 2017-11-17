@@ -114,6 +114,17 @@ module.exports = function (express, passport) {
     });        
   });
 
+  // formulario para deletar uma disciplina (e todos os registros com essa disciplina!!)
+  router.post('/update_Disciplinas', function (req, res){
+    var query = "DELETE FROM " + dbconfig.disciplinas_table + 
+      " WHERE codigo = ?";   
+    var params = [req.body.codigoDis]; 
+    queryFile.data.deleteSQLquery(query, params, function (result) {
+      req.flash('info', result);      
+      res.redirect('/lista_disciplinas');
+    }); 
+  });
+
   //=================================================
   // LISTA DE TODAS AS TURMAS =======================
   // ================================================
@@ -181,8 +192,7 @@ module.exports = function (express, passport) {
     if (req.session.typeuser == "administrador") { 
       var query = "SELECT matricula, nome FROM " + dbconfig.alunos_table;
       var query2 = "SELECT codigoDisciplina, id FROM " + dbconfig.turmas_table; 
-      var query3 = "SELECT idTurma, matriculaAluno, codigoDisciplina FROM " + 
-        dbconfig.turma_aluno_table;
+      var query3 = "SELECT idTurma, matriculaAluno, codigoDisciplina FROM " + dbconfig.turma_aluno_table;
       var listaTurmas, listaAlunos;
 
       queryFile.data.selectSQLquery(query, function (result){

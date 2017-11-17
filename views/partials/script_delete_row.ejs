@@ -1,0 +1,39 @@
+<!-- views/partials/script_delete_row.ejs -->
+<script>
+		//Mostra o código da disciplina no box do pedido de delete
+		$(document).on("click", ".btn-setting", function() {
+			document.getElementById("disID").innerHTML = $(this).data('id');
+		});
+		//pega id da disciplina que clicou pra remover
+		$('.remove_modal').click(function () {
+			var href = $(this).data('target');
+			var id = $(this).data('id');
+			$(href).data('id', id);
+		});
+	
+		function postRefreshPage(idDis) {
+			var theForm, newInput;
+			// Start by creating a <form>
+			theForm = document.createElement('form');
+			theForm.action = '/update_Disciplinas';
+			theForm.method = 'post';
+			// Next create the <input>s in the form and give them names and values
+			newInput = document.createElement('input');
+			newInput.type = 'hidden';
+			newInput.name = 'codigoDis';
+			newInput.value = idDis;
+			// now put everything together...
+			theForm.appendChild(newInput);
+			// ...and it to the DOM...
+			document.getElementById('hidden_form_container').appendChild(theForm);
+			// ...and submit it
+			theForm.submit();
+		}
+
+		//armazena o id
+		$('#savebutton').click(function(){
+			var id = $('#myModal').data('id');
+			idDis = id;
+			postRefreshPage(id);
+		});
+</script>

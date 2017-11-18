@@ -95,22 +95,27 @@ module.exports = function(passport) {
 				} else {
 					// if there is no user with that username
 					// create the user
+					var avatar;
+					if (req.body.sexo == 'm') avatar = 'avatar_m.png';
+					else avatar = 'avatar_f.png'; 
+
 					var newUserMysql = {
 						matricula: req.body.matricula,
 						nome: req.body.nome,
 						sex: req.body.sexo,
 						email: req.body.email,
+						image: avatar,
 						password: bcrypt.hashSync(password, null, null),  
 						// use the generateHash function in our user model                        
 					};
 
 					var insertQuery = "INSERT INTO " +  tableSelected  + 
-						" ( matricula, nome, sexo, email, password )" +
-						" values (?,?,?,?,?) ";
+						" ( matricula, nome, sexo, email, password, image )" +
+						" values (?,?,?,?,?,?) ";
 
 					connection.query(insertQuery,[newUserMysql.matricula, 
 						newUserMysql.nome, newUserMysql.sex, 
-						newUserMysql.email, newUserMysql.password],
+						newUserMysql.email, newUserMysql.password, newUserMysql.image],
 						function(err, rows) {
 							//pass to the session the user type to unlock rights
 							return done(null, false, req.flash('signupMessage', 

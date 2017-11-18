@@ -441,6 +441,41 @@ module.exports = function (express, passport) {
     });
   });
 
+  router.post('/add_user_image', function (req, res) {
+    //When you upload a file, the file will be accessible from req.files.
+    if (!req.files.uploaded_image) res.redirect('/profile');
+    var file = req.files.uploaded_image;
+    var img_name = file.name;
+
+    var tableSelected;
+    if (req.session.typeuser== "administrador") 
+      tableSelected = dbconfig.admin_table;
+    else if (req.session.typeuser == "professor") 
+      tableSelected = dbconfig.professores_table; 
+    else if (req.session.typeuser == "aluno") 
+      tableSelected = dbconfig.alunos_table; 
+
+    // Se a imagem for de formato aceitável
+    if (file.mimetype == "image/jpeg" || 
+      file.mimetype == "image/png" || file.mimetype == "image/gif" ){
+        //console.log("Imagem com nome: " + img_name);
+        //console.log("Imagem com formato aceitável: " + file.mimetype);
+        file.mv('public/img/user_upload_images/'+ file.name, function(err) {
+          if (err) return res.status(500).send(err);
+          var query =  "UPDATE " + tableSelected + " SET " +
+          " image = ? WHERE matricula = ? "; 
+          var params = [img_name, req.user.matricula];
+          console.log(query);
+          queryFile.data.updateSQLquery(query, params, function (result){  
+            res.redirect('/profile');
+          });        
+       });
+    } else {
+      console.log("This format is not allowed , please upload file with '.png','.gif','.jpg'");
+      res.redirect('/profile');
+    } 
+  });
+
   router.get('/:courseId', isLoggedIn, function (req, res) {
     var courseId = req.params.courseId;
     console.log("Página " + courseId + " foi pedida.");

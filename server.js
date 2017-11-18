@@ -14,6 +14,7 @@ var port = process.env.PORT || 8080;
 var passport = require('passport');
 var flash = require('connect-flash');
 
+var fileUpload = require('express-fileupload');
 // ================================================================
 // configuration database
 // ================================================================
@@ -35,6 +36,8 @@ app.use(bodyParser.urlencoded({
 	extended: true
 }));
 app.use(bodyParser.json());
+
+app.use(fileUpload());
 
 app.set('view engine', 'ejs');
 // set the view engine to ejs (Embedded JS)

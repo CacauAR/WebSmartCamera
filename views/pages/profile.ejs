@@ -20,15 +20,33 @@
 			<!-- LOCAL INFORMATION -->
 			<div class="col-sm-6">
 				<div class="well">
-					<h3><span class="fa fa-user"></span> Local</h3>
+					<h3><span class="fa fa-user"></span>Informações Usuário: </h3><br>
 					<p>
+						<img alt="User Pic" src="public/img/user_upload_images/<%=user.image%>" 
+							class="img-circle img-responsive" width="10%" height="10%"><br><br>
 						<strong>Tipo usuário: </strong><%= tipoUsuario %><br>
 						<strong>Matricula: </strong> <%= user.matricula %><br>
 						<strong>Nome: </strong> <%= user.nome %><br>
-					  <strong>Email: </strong> <%= user.email %><br>
+						<strong>Email: </strong> <%= user.email %><br>
 					</p>
 				</div>
 			</div>
+
+			<!-- Se tem uma imagem de perfil, esta é visualizada,
+				caso contrário é mostrado o formulário para amazenar-->
+			<form action="/add_user_image" method="post" enctype="multipart/form-data">
+				<div class="form-group">
+					<label class="col-md-3 control-label">
+						<strong>Profile Image</strong>
+					</label>
+					<div class="col-sm-9">
+						<input class="form-control" type="file" name="uploaded_image" accept=""/>
+						<button id="btn-signup" type="submit" class="btn btn-info">
+							<i class="icon-hand-right"></i> &nbsp Mudar Foto
+						</button>
+					</div>
+				</div> 
+			</form>
 
 		</div>
 	</div>

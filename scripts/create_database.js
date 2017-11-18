@@ -10,9 +10,10 @@ connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.admin_table + '` ( \
     `matricula` VARCHAR (7) NOT NULL, \
     `nome` VARCHAR(80) NOT NULL, \
-    `sexo` CHAR(1), \
-    `email` VARCHAR(100), \
+    `sexo` CHAR(1) NOT NULL, \
+    `email` VARCHAR(100) NOT NULL, \
     `password` CHAR(60) NOT NULL, \
+    `image` VARCHAR(255), \
         PRIMARY KEY (`matricula`), \
     UNIQUE INDEX `matricula_UNIQUE` (`matricula` ASC), \
     UNIQUE INDEX `nome_UNIQUE` (`nome` ASC) \
@@ -26,6 +27,7 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.alunos_table + '` ( \
     `sexo` CHAR(1), \
     `email` VARCHAR(100), \
     `password` CHAR(60) NOT NULL, \
+    `image` VARCHAR(255), \
         PRIMARY KEY (`matricula`), \
     UNIQUE INDEX `matricula_UNIQUE` (`matricula` ASC), \
     UNIQUE INDEX `nome_UNIQUE` (`nome` ASC) \
@@ -38,6 +40,7 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.professores_table + '` ( 
     `sexo` CHAR(1), \
     `email` VARCHAR(100), \
     `password` CHAR(60) NOT NULL, \
+    `image` VARCHAR(255), \
         PRIMARY KEY (`matricula`), \
     UNIQUE INDEX `matricula_UNIQUE` (`matricula` ASC), \
     UNIQUE INDEX `nome_UNIQUE` (`nome` ASC) \
@@ -94,18 +97,19 @@ connection.query('USE ' + dbconfig.database);
 var newUserMysql = {
                         matricula: "es00001",
                         username: "root",
-                        sex: "F",
-                        email: "vanessa.vasconcelos@ufv.br",
-                        password: bcrypt.hashSync("123", null, null),  
+                        sex: "m",
+                        email: "test@ufv.br",
+                        password: bcrypt.hashSync("123", null, null), 
+                        image : "avatar_m.png"
                         // use the generateHash function in our user model                        
                     };
 
-var insertQuery = "INSERT INTO administrador (matricula, nome, sexo, email, password )" +
-                  " VALUES (?,?,?,?,?) ";
+var insertQuery = "INSERT INTO administrador (matricula, nome, sexo, email, password, image )" +
+                  " VALUES (?,?,?,?,?,?) ";
 
 connection.query(insertQuery,[newUserMysql.matricula, 
     newUserMysql.username, newUserMysql.sex, 
-    newUserMysql.email, newUserMysql.password],
+    newUserMysql.email, newUserMysql.password, newUserMysql.image],
     function (err, result) {
         if (err) throw err;
         console.log("Administrador es00001 inserted");

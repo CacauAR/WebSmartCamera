@@ -40,11 +40,13 @@ var methods = {};
     });
   }
 
-  methods.alterSQLquery  = function (sqlQuery, callback) {     
+  methods.updateSQLquery  = function (sqlQuery, params, callback) {     
     console.log ('Chamou query de alterar');
-    connection.query(sqlQuery, function (error, rows, fields) {
-      if (error) return console.log(error);
-      callback (rows);
+    connection.query(sqlQuery, params, function (error, rows, fields) {
+      if (error) {message = 3; console.log(error);} 
+      // mostra a mensagem de erro na página
+      else message = 4; // mostra a mensagem de sucesso na página
+      callback (message);
     });   
   } 
 

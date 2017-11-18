@@ -49,9 +49,13 @@
 
 				<!-- show any messages that come back with authentication -->
 				<% if (message == 1) { %>
-					<div class="alert alert-error">Erro ao tentar adicionar turma.</div>
+					<div class="alert alert-error">
+						<i class="icon-remove"></i>Erro ao tentar adicionar turma.
+					</div>
 				<% } else if (message == 2) { %>
-					<div class="alert alert-success">Turma adicionada com sucesso.</div>
+					<div class="alert alert-success">
+						<i class="icon-ok"></i>Turma adicionada com sucesso.
+					</div>
 				<% } %>
 
 				<!-- Listar turmas no sistema -->

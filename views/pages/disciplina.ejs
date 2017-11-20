@@ -17,29 +17,27 @@
 						<a href="home">Home</a>
 						<i class="icon-angle-right"></i>
 					</li>
-					<li><a href="#"> <%= lista[0].codigoDisciplina %> </a></li>
+					<li><a href="#"> <%= disciplina.codigoDisciplina %> </a></li>
 				</ul>
+
 				<div class="row-fluid">
-					<div class="span12">
-						<% if (tipoUsuario == "aluno") { %>
-							<h1><%= lista[0].nomeDisciplina %> - Turma <%= lista[0].idTurma %></h1>
-						<% } else if (tipoUsuario == "professor") { %>
-							<h1><%= lista[0].nomeDisciplina %> - Turma <%= lista[0].id %> </h1>
-						<% }%>
+					<div class="span12">					
+						<h1><%= disciplina.nomeDisciplina %> - Turma <%= disciplina.id %></h1>
 						<div class="priority high"><span><h4>Aulas ao Vivo</h4></span></div>
 						<div class="task high">
 							<div class="desc">
 								<% if (tipoUsuario == "professor") { %>
 									<div class="title"><a href="/video">Iniciar transmissão</div>
 								<% } else if (tipoUsuario == "aluno") { %>
-									<div class="title"><a href= "/video">Assistir</div>
+									<div class="title"><a href="/video">Assistir</div>
 								<% }%>
 							</div>
 						</div>
+
 						<div class="priority medium"><span><h4>Aulas Online</h4></span></div>
 						<div class="task medium">
 							<div class="desc">
-								<div class="title"><a href= <%="/"+ lista[0].codigoDisciplina+"?aula=1"%> >
+								<div class="title"><a href= <%="/"+ disciplina.codigoDisciplina +"?aula=1"%> >
 									Aula 1 - Carga Elétrica e Campo Elétrico</a>
 								</div>
 								<div>Neque porro quisquam est qui, consectetur, adipisci velit</div>
@@ -51,7 +49,7 @@
 						</div>
 						<div class="task medium last">
 							<div class="desc">
-								<div class="title"><a href=<%="/"+ lista[0].codigoDisciplina+"?aula=2"%>>
+								<div class="title"><a href=<%="/"+ disciplina.codigoDisciplina+"?aula=2"%>>
 									Aula 2 - Lei de Gauss</a>
 								</div>
 								<div>Neque porro quisquam est qui, consectetur, adipisci velit</div>
@@ -61,32 +59,70 @@
 								<div> 1 day</div>
 							</div>
 						</div>
+
 						<div class="priority low"><span><h3>Material Didático</h3></span></div>
-						<div class="task low">
-							<div class="desc">
-								<div class="title">Lorem Ipsum</div>
-								<div>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit</div>
-							</div>
-							<div class="time">
-								<div class="date">Jun 1, 2012</div>
-								<div> 1 day</div>
-							</div>
-						</div>
-						<div class="task low">
-							<div class="desc">
-								<div class="title">Lorem Ipsum</div>
-								<div>Neque porro quisquam est qui, consectetur, adipisci velit</div>
-							</div>
-							<div class="time">
-								<div class="date">Jun 1, 2012</div>
-								<div> 1 day</div>
-							</div>
-						</div>
+						<% listaArquivos.forEach (file => { %>						
+							<div class="task low">
+								<div class="desc">
+									<div class="title">
+										<a href= '#' onclick="displayPDF()"><%= file.titulo %></a>
+									</div>
+								</div>
+							</div>								
+						<% }); %>	
+						
 					</div>
 				</div>
+				<br>
+
+				<% if (tipoUsuario == 'professor') { %>
+					<!-- Formulário para adicionar arquivos (ex:pdfs) -->
+					<div class="row-fluid">
+						<div class="box span12">
+								<div class="box-header" data-original-title>
+									<h2><i class="halflings-icon white edit"></i><span class="break">
+										</span>Fazer Upload de Arquivos
+									</h2>
+								</div>
+								<div class="box-content">
+									<form class="form-horizontal" action="/upload_file" method="post"
+										enctype="multipart/form-data" onsubmit="return validateForm()"
+										name="myForm">
+										<fieldset>
+											<div class="form-group form-actions">											
+												<label class="control-label">
+													<strong>Nome do arquivo: &nbsp </strong>
+												</label>
+												<input type="text" name="nomeArquivo" value="">
+												<input type="hidden" name="codDisciplina" value='<%= disciplina.codigoDisciplina %>'>
+												<input type="hidden" name="idTurma" value=' <%= disciplina.id %>'>
+												<input id="fileUpload" class="form-control" type="file" 
+												name="uploaded_file" accept=""/> &nbsp
+												<button id="btn-signup" type="submit" class="btn btn-info">
+													Upload File
+												</button>									
+											</div> 
+										</fieldset>
+									</form>			
+								</div>
+							</div>
+					</div>
+				<%	} %>
+
 			</div>
-		</div>
-	</div>
+		</div>		
+	</div>	
+	<script>
+		function displayPDF() {
+				window.open('https://localhost:8080/public/uploaded_files/FIS203/CCP_horario_semestre_par_20172-v3.pdf');
+		}
+		// Verifica se formulário foi preenchido totalmente
+		function validateForm() {
+		 	if (document.getElementById("fileUpload").files.length == 0) {
+        alert("Nenhum arquivo foi selecionado"); return false;
+			}
+		}						
+	</script>
 	<% include ../partials/footer %>
 	<% include ../partials/scripts %>
 </body>

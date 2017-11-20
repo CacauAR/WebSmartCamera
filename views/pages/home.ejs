@@ -40,18 +40,11 @@
 									<% if (tipoUsuario == "aluno" || tipoUsuario == "professor") { %>
 										<% for (var i in lista) { %>
 											<tr>
-												<td>
-													<% if (tipoUsuario == "aluno") { %>
-														<a href="<%= lista[i].codigoDisciplina %>">
-														<%= lista[i].codigoDisciplina %> - <%= lista[i].nomeDisciplina %>
-														- Turma <%= lista[i].idTurma %>
-														</a>
-													<% } else if (tipoUsuario == "professor") { %>
-														<a href="<%= lista[i].codigoDisciplina %>">
-														<%= lista[i].codigoDisciplina %> - <%= lista[i].nomeDisciplina %>
-														- Turma <%= lista[i].id %>
-														</a>	
-													<% } %>
+												<td>												
+													<a href="<%= lista[i].codigoDisciplina %>">
+													<%= lista[i].codigoDisciplina %> - <%= lista[i].nomeDisciplina %>
+													- Turma <%= lista[i].id %>
+													</a>
 												</td>
 											</tr>
 										<% } %>

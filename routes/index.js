@@ -44,9 +44,13 @@ module.exports = function (express, passport) {
   // =================================================
   // HOME PAGE =======================================
   // =================================================
+
   router.get('/home', isLoggedIn, function (req, res) {   
+    // se o usuário for professor, a página mostrará todas as turmas que este 
+    // está cadastrado, caso seja aluno, todas as turmas que está matriculado.
+    // a query será feita em tabelas diferentes para cada caso
       if (req.session.typeuser == "aluno"){
-        var query =  "SELECT codigoDisciplina, idTurma, nomeDisciplina FROM " + 
+        var query =  "SELECT codigoDisciplina, id, nomeDisciplina FROM " + 
           dbconfig.turma_aluno_table + ", " + dbconfig.disciplinas_table + 
           " WHERE codigo=codigoDisciplina AND matriculaAluno='" + 
           req.user.matricula + "'";         
@@ -104,6 +108,17 @@ module.exports = function (express, passport) {
 
   // processa o formulário de cadastro de disciplina
   router.post('/lista_disciplinas', function (req, res) {
+
+    // cria diretório para upload de material da disciplina
+    const fileFolder = './public/uploaded_files/';
+    fs.stat(fileFolder + req.body.codDisciplina + "/", function (err, stats) {
+      if (err) {
+        // Directory doesn't exist or something.
+        fs.mkdir(fileFolder + req.body.codDisciplina); 
+        console.log('Folder doesn\'t exist, so I made the folder ' + req.body.codDisciplina);
+      } else  console.log('Does exist'); 
+    });
+
     var query =  "INSERT INTO " + dbconfig.disciplinas_table + 
     " (codigo, nomeDisciplina) VALUES (?,?)"; 
     var params = [req.body.codDisciplina,req.body.nomeDisciplina];
@@ -192,7 +207,7 @@ module.exports = function (express, passport) {
     if (req.session.typeuser == "administrador") { 
       var query = "SELECT matricula, nome FROM " + dbconfig.alunos_table;
       var query2 = "SELECT codigoDisciplina, id FROM " + dbconfig.turmas_table; 
-      var query3 = "SELECT idTurma, matriculaAluno, codigoDisciplina FROM " + dbconfig.turma_aluno_table;
+      var query3 = "SELECT id, matriculaAluno, codigoDisciplina FROM " + dbconfig.turma_aluno_table;
       var listaTurmas, listaAlunos;
 
       queryFile.data.selectSQLquery(query, function (result){
@@ -217,7 +232,7 @@ module.exports = function (express, passport) {
 
   router.post('/matricular', function (req, res) {
     var query =  "INSERT INTO " + dbconfig.turma_aluno_table + 
-    " (idTurma, matriculaAluno, codigoDisciplina) VALUES (?,?,?)"; 
+    " (id, matriculaAluno, codigoDisciplina) VALUES (?,?,?)"; 
     var separado = req.body.codDisciplina.split("-");
     //CodigoDisciplina - ID Turma
     var params = [separado[1], req.body.matriculaAluno, separado[0]];
@@ -442,11 +457,11 @@ module.exports = function (express, passport) {
   });
 
   router.post('/add_user_image', function (req, res) {
-    //When you upload a file, the file will be accessible from req.files.
-    if (!req.files.uploaded_image) res.redirect('/profile');
+    if (!req.files) res.redirect('/profile');
     var file = req.files.uploaded_image;
     var img_name = file.name;
-
+    console.log("tipo: "+ file.mimetype + " nome: " + file.name);
+   
     var tableSelected;
     if (req.session.typeuser== "administrador") 
       tableSelected = dbconfig.admin_table;
@@ -458,28 +473,45 @@ module.exports = function (express, passport) {
     // Se a imagem for de formato aceitável
     if (file.mimetype == "image/jpeg" || 
       file.mimetype == "image/png" || file.mimetype == "image/gif" ){
-        //console.log("Imagem com nome: " + img_name);
-        //console.log("Imagem com formato aceitável: " + file.mimetype);
         file.mv('public/img/user_upload_images/'+ file.name, function(err) {
           if (err) return res.status(500).send(err);
           var query =  "UPDATE " + tableSelected + " SET " +
           " image = ? WHERE matricula = ? "; 
           var params = [img_name, req.user.matricula];
-          console.log(query);
           queryFile.data.updateSQLquery(query, params, function (result){  
             res.redirect('/profile');
           });        
        });
     } else {
       console.log("This format is not allowed , please upload file with '.png','.gif','.jpg'");
+      //console.log("tipo: "+ file.mimetype + " nome: " + file.name + " tamanho: " + req.files.uploaded_image.size);
       res.redirect('/profile');
     } 
+  });
+
+  router.post('/upload_file', function (req, res) {
+    var file = req.files.uploaded_file;
+    var file_name = file.name;
+    var codDis = req.body.codDisciplina;     
+
+    if (file.mimetype == 'application/pdf') {
+      file.mv('public/uploaded_files/' + codDis + '/'+ file.name, function(err) {
+        if (err) return res.status(500).send(err);
+        var query =  "INSERT INTO " + dbconfig.arquivos_table + 
+        " (id,caminho,codigoDisciplina, titulo) VALUES (?,?,?,?)"; 
+        var params = [req.body.idTurma ,file.name, codDis,req.body.nomeArquivo];
+        queryFile.data.insertSQLquery(query, params, function (result){     
+          res.redirect('/'+ codDis);
+        });       
+     });
+    } else res.redirect('/'+ codDis);
   });
 
   router.get('/:courseId', isLoggedIn, function (req, res) {
     var courseId = req.params.courseId;
     console.log("Página " + courseId + " foi pedida.");
         
+    //cria página com o vídeo da disciplina pedida
     if (req.query.aula != null){
       console.log("Pediu pra assistir aula " + req.query.aula
         + " da matéria "); 
@@ -490,55 +522,81 @@ module.exports = function (express, passport) {
         tipoUsuario : req.session.typeuser,
         turmasSessao : listaTurmasSessao
       });
-    }
+    } 
 
-    /*else if (req.query.video != null){
-      console.log("Pediu pra assistir video " + req.query.aula
-        + " da matéria "); 
-      res.render('pages/video', {
-        user: req.user,
-        title: "WebSmartCamera - AULA TAL",
-        aula: req.query.aula,
-        tipoUsuario : req.session.typeuser
+    //cria página da disciplina 
+    else {     
+      var filesList=0, disciplinaPagina, idTurma;
+      //const fileFolder = './public/uploaded_files/';
+      // Verifica se tem arquivos nessa pasta
+      /*fs.readdir(fileFolder + courseId, (err, files) => {
+        if (err) return console.log(err);
+        else filesList = files;
+      });*/     
+
+      //VER DA TABELA ARQUIVOS NAO DA PASTA!!!!!!!      
+      //console.log("Foi para a página: " + courseId);
+      var matriculaType, table;
+      if (req.session.typeuser == 'professor') {
+        matriculaType = 'matriculaProfessor';
+        table = dbconfig.turmas_table;
+      }
+      else if(req.session.typeuser == 'aluno') {
+        matriculaType = 'matriculaAluno';
+        table = dbconfig.turma_aluno_table;
+      }
+      var query =  "SELECT codigoDisciplina, id, nomeDisciplina FROM " + table + ", " + 
+        dbconfig.disciplinas_table + " WHERE codigo = codigoDisciplina AND " + 
+        matriculaType + " = '" + req.user.matricula + "' AND codigoDisciplina='" + courseId + "';"; 
+
+      queryFile.data.selectSQLquery(query, function (result) {
+        console.log("tentou fazer a select query uma vez");
+        idTurma = result[0].id;
+        disciplinaPagina = result[0];   
+        console.log('disciplina: ' + disciplinaPagina.codigoDisciplina);
+        console.log('id da turma: ' + idTurma);  
+
+        var query2 =  "SELECT * FROM " + dbconfig.arquivos_table + 
+        " WHERE id ='"+ idTurma + "'  AND codigoDisciplina='" + courseId + "';";
+  
+        queryFile.data.selectSQLquery(query2, function (result2) {
+          filesList = result2;
+          console.log("fez a query dos arquivos");
+          res.render('pages/disciplina', {
+            user: req.user,
+            title: "WebSmartCamera - " + courseId,
+            disciplina: disciplinaPagina,
+            tipoUsuario : req.session.typeuser,
+            listaArquivos : filesList,
+            turmasSessao : listaTurmasSessao
+          });
+        });
+        
+        
       });
 
+         
+      
+      
+      /*
+      var query2 =  "SELECT * FROM " + dbconfig.arquivos_table + 
+      " WHERE id ='"+ idTurma + "'  AND codigoDisciplina='" + courseId + "';";
 
-    }*/
-
-
-    //verifica no banco de dados se existe tal página
-    else {
-      //console.log("Foi para a página: " + courseId);
-      if (req.session.typeuser == "professor"){
-        var query =  "SELECT codigoDisciplina, id, nomeDisciplina FROM " + dbconfig.turmas_table + ", " + 
-        dbconfig.disciplinas_table + " WHERE codigo = codigoDisciplina AND matriculaProfessor = '" + req.user.matricula + 
-        "' AND codigoDisciplina='" + courseId + "';"; 
-        queryFile.data.selectSQLquery(query, function (result) {
-          res.render('pages/disciplina', {
-            user: req.user,
-            title: "WebSmartCamera - " + courseId,
-            lista: result,
-            tipoUsuario : req.session.typeuser,
-            turmasSessao : listaTurmasSessao
-          });
-        });
-      }else if (req.session.typeuser == "aluno"){
-        var query =  "SELECT codigoDisciplina, idTurma, nomeDisciplina FROM " + dbconfig.turma_aluno_table + ", " + 
-        dbconfig.disciplinas_table + " WHERE codigo = codigoDisciplina AND matriculaAluno = '" + req.user.matricula + 
-        "' AND codigoDisciplina='" + courseId + "';"; 
-        queryFile.data.selectSQLquery(query, function (result) {
-          res.render('pages/disciplina', {
-            user: req.user,
-            title: "WebSmartCamera - " + courseId,
-            lista: result,
-            tipoUsuario : req.session.typeuser,
-            turmasSessao : listaTurmasSessao
-          });
-        });
-
-      }
+      queryFile.data.selectSQLquery(query2, function (result) {
+        filesList = result;
+        console.log("fez a query dos arquivos");
+      });
+      
+      res.render('pages/disciplina', {
+        user: req.user,
+        title: "WebSmartCamera - " + courseId,
+        disciplina: disciplinaPagina,
+        tipoUsuario : req.session.typeuser,
+        listaArquivos : filesList,
+        turmasSessao : listaTurmasSessao
+      });
+      */
     }
-
   });
 
   return router;

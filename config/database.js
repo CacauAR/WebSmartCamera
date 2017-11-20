@@ -11,5 +11,6 @@ module.exports = {
     'professores_table' : 'professor',
     'disciplinas_table' : 'disciplina',
     'turmas_table' : 'turma',
-    'turma_aluno_table' : 'estuda'   
+    'turma_aluno_table' : 'estuda',
+    'arquivos_table' : 'arquivo'   
 };

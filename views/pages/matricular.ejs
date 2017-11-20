@@ -51,12 +51,11 @@
 				<!-- show any messages that come back with authentication -->
 				<% if (message == 1) { %>
 					<div class="alert alert-error">
-						<i class="icon-remove"></i>
-						Erro na matrícula.
+						<i class="icon-remove"></i> &nbsp Erro na matrícula.
 					</div>
 				<% } else if (message == 2) { %>
 					<div class="alert alert-success">
-						<i class="icon-ok"></i>Matrícula realizada com sucesso.
+						<i class="icon-ok"></i> &nbsp Matrícula realizada com sucesso.
 					</div>
 				<% } %>
 
@@ -80,9 +79,9 @@
 								<tbody>
 									<% for (var i in listaDeMatriculados) { %>
 										<tr>
-											<td><%= listaDeMatriculados[i].idTurma %></td>
-                 	   <td><%= listaDeMatriculados[i].codigoDisciplina %></td>
-                 	   <td><%= listaDeMatriculados[i].matriculaAluno %></td>
+											<td><%= listaDeMatriculados[i].id %></td>
+                 	  	<td><%= listaDeMatriculados[i].codigoDisciplina %></td>
+                 	  	<td><%= listaDeMatriculados[i].matriculaAluno %></td>
 											<td class="center">           
                    	  	<a class="btn btn-danger" title="Remover" 
                     	    data-rel="tooltip" href="#">

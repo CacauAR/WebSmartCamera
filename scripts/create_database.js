@@ -74,12 +74,12 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.turmas_table + '` ( \
 
 connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.turma_aluno_table + '` ( \
-    `idTurma` INT NOT NULL, \
+    `id` INT NOT NULL, \
     `matriculaAluno` VARCHAR (7) NOT NULL, \
     `codigoDisciplina` CHAR(6) NOT NULL, \
         PRIMARY KEY (`matriculaAluno`, `codigoDisciplina`), \
-    UNIQUE INDEX `id_UNIQUE` (`idTurma` ASC), \
-    CONSTRAINT `IDTurma` FOREIGN KEY (`idTurma`) \
+    UNIQUE INDEX `id_UNIQUE` (`id` ASC), \
+    CONSTRAINT `IDTurma` FOREIGN KEY (`id`) \
         REFERENCES `' + dbconfig.database + '`.`'+ dbconfig.turmas_table + '` (`id`)\
         ON DELETE CASCADE ON UPDATE CASCADE, \
     CONSTRAINT `codigoDisc` FOREIGN KEY (`codigoDisciplina`) \
@@ -87,6 +87,21 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.turma_aluno_table + '` ( 
         ON DELETE CASCADE ON UPDATE CASCADE, \
     CONSTRAINT `MatriculaAluno` FOREIGN KEY (`matriculaAluno`) \
         REFERENCES `' + dbconfig.database + '`.`'+ dbconfig.alunos_table + '` (`matricula`) \
+        ON DELETE CASCADE ON UPDATE CASCADE \
+)');
+
+connection.query('\
+CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.arquivos_table + '` ( \
+    `id` INT NOT NULL, \
+    `caminho` VARCHAR (255) NOT NULL, \
+    `codigoDisciplina` CHAR(6) NOT NULL, \
+    `titulo` VARCHAR(255) NOT NULL, \
+        PRIMARY KEY (`titulo`), \
+    CONSTRAINT `idT` FOREIGN KEY (`id`) \
+    REFERENCES `' + dbconfig.database + '`.`'+ dbconfig.turmas_table + '` (`id`)\
+    ON DELETE CASCADE ON UPDATE CASCADE, \
+    CONSTRAINT `codigoDisciFile` FOREIGN KEY (`codigoDisciplina`) \
+        REFERENCES `' + dbconfig.database + '`.`'+ dbconfig.disciplinas_table + '` (`codigo`) \
         ON DELETE CASCADE ON UPDATE CASCADE \
 )');
 

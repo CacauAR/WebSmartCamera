@@ -48,7 +48,8 @@
 						caso contrário é mostrado apenas o avatar padrão para cada gênero-->
 							<div class="form-group form-actions">
 								<div class="col-sm-9">
-									<input id="image" class="form-control" type="file" name="uploaded_image" accept=""/>
+									<input id="image" class="form-control" type="file" 
+										name="uploaded_image" required accept=""/>
 									<button id="btn-signup" type="submit" class="btn btn-info">
 										<i class="icon-hand-right"></i> &nbsp Upload
 									</button>
@@ -62,16 +63,6 @@
 	
 	</div>
 	</div>
-	<script>
-			// Verifica se formulário foi preenchido totalmente
-			function validateForm() {
-				var x = document.getElementById("image").files.length;
-				 if (x == 0) {
-						alert("Preencha todos os campos por favor.");
-						return false;
-				}
-			}
-		</script>
 	<% include ../partials/footer %>
 	<% include ../partials/scripts %>	
 </body>

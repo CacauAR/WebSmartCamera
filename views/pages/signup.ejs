@@ -24,40 +24,41 @@
 				<form action="/signup" method="post">				
 					<div class="form-group">
 						<label for="tipoUsuario" > Tipo de usuário: </label>
-						<select class="form-control" name="tipoUsuario">                      
-							<option value="aluno" selected >Aluno</option>
+						<select class="form-control" name="tipoUsuario" required> 
+							<option disabled selected value> -- Selecione uma opção -- </option>                     
+							<option value="aluno">Aluno</option>
 							<option value="professor">Professor</option>
 							<option value="administrador">Administrador</option>
 						</select>
 					</div>   
 					<div class="form-group">
 						<label>Nome</label>
-						<input type="text" class="form-control" name="nome">
+						<input type="text" class="form-control" name="nome" required>
 					</div>
 					<div class="form-group">
 						<label>Password</label>
-						<input type="password" class="form-control" name="password">
+						<input type="password" class="form-control" name="password" required>
 					</div>
 					<div class="form-group form-check-inline">
 						<label>Sexo</label>
 						<label class="form-check-label">
 							<input class="form-check-input" type="radio" 
-								name="sexo" value="m"> M
+								name="sexo" value="m" required> M
 						</label>
 					</div>
 					<div class="form-group form-check-inline">
 						<label class="form-check-label">
 							<input class="form-check-input" type="radio"
-								name="sexo" value="f"> F
+								name="sexo" value="f" required> F
 						</label>
 					</div>
 					<div class="form-group">
 						<label>Matrícula</label>
-						<input type="text" class="form-control" name="matricula">
+						<input type="text" class="form-control" name="matricula" required>
 					</div>
 					<div class="form-group">
 						<label>Email</label>
-						<input type="email" class="form-control" name="email">
+						<input type="email" class="form-control" name="email" required>
 					</div>
 					<button type="submit" class="btn btn-warning btn-lg">Cadastrar</button>
 				</form>

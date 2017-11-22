@@ -25,6 +25,7 @@
 					<div class="form-group">
             <label for="codDisciplina" >Código Disciplina - ID Turma: </label>
             <select class="form-control" name="codDisciplina">
+							<option disabled selected value> -- Selecione uma opção -- </option>
               <% for (var i in listaDeTurmas) { %>
 								<option value="<%= listaDeTurmas[i].codigoDisciplina + " - "
 							  	+ listaDeTurmas[i].id %>">
@@ -37,6 +38,7 @@
           <div class="form-group">
             <label for="codDisciplina" >Lista de Alunos: </label>
             <select class="form-control" name="matriculaAluno">
+							<option disabled selected value> -- Selecione uma opção -- </option>
               <% for (var i in listaDeAlunos) { %>
                 <option value="<%= listaDeAlunos[i].matricula %>">
                   <%= listaDeAlunos[i].matricula %> -
@@ -80,8 +82,8 @@
 									<% for (var i in listaDeMatriculados) { %>
 										<tr>
 											<td><%= listaDeMatriculados[i].id %></td>
-                 	  	<td><%= listaDeMatriculados[i].codigoDisciplina %></td>
-                 	  	<td><%= listaDeMatriculados[i].matriculaAluno %></td>
+                 	   <td><%= listaDeMatriculados[i].codigoDisciplina %></td>
+                 	   <td><%= listaDeMatriculados[i].matriculaAluno %></td>
 											<td class="center">           
                    	  	<a class="btn btn-danger" title="Remover" 
                     	    data-rel="tooltip" href="#">

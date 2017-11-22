@@ -23,19 +23,20 @@
 				<form action="/login" method="post">
 					<div class="form-group">
 						<label for="tipoUsuario" > Logar como: </label>
-						<select class="form-control" name="tipoUsuario">                      
-							<option value="aluno" selected >Aluno</option>
+						<select class="form-control" name="tipoUsuario" required>      
+							<option disabled selected value> -- Selecione uma opção -- </option>                
+							<option value="aluno">Aluno</option>
 							<option value="professor">Professor</option>
 							<option value="administrador">Administrador</option>
 						</select>
 					</div>
 					<div class="form-group">
 						<label>Matrícula</label>
-						<input type="text" class="form-control" name="matricula">
+						<input type="text" class="form-control" name="matricula" required>
 					</div>
 					<div class="form-group">
 						<label>Password</label>
-						<input type="password" class="form-control" name="password">
+						<input type="password" class="form-control" name="password" required>
 					</div>
 					<div class="form-group">
 						<label>Remember Me</label>

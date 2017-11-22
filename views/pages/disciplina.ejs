@@ -93,11 +93,11 @@
 												<label class="control-label">
 													<strong>Nome do arquivo: &nbsp </strong>
 												</label>
-												<input type="text" name="nomeArquivo" value="">
+												<input type="text" name="nomeArquivo" value="" required>
 												<input type="hidden" name="codDisciplina" value='<%= disciplina.codigoDisciplina %>'>
 												<input type="hidden" name="idTurma" value=' <%= disciplina.id %>'>
 												<input id="fileUpload" class="form-control" type="file" 
-												name="uploaded_file" accept=""/> &nbsp
+												name="uploaded_file" required accept=""/> &nbsp
 												<button id="btn-signup" type="submit" class="btn btn-info">
 													Upload File
 												</button>									
@@ -116,12 +116,6 @@
 		function displayPDF() {
 				window.open('https://localhost:8080/public/uploaded_files/FIS203/CCP_horario_semestre_par_20172-v3.pdf');
 		}
-		// Verifica se formulário foi preenchido totalmente
-		function validateForm() {
-		 	if (document.getElementById("fileUpload").files.length == 0) {
-        alert("Nenhum arquivo foi selecionado"); return false;
-			}
-		}						
 	</script>
 	<% include ../partials/footer %>
 	<% include ../partials/scripts %>

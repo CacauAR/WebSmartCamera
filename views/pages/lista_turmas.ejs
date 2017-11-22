@@ -35,7 +35,8 @@
 										<label class="control-label">
 											Codigo da disciplina</label>
 										<div class="controls">
-											<select class="form-control" name="codDisciplina">
+											<select class="form-control" name="codDisciplina" required>
+												<option disabled selected value> -- Selecione uma opção -- </option>
                					<% for (var i in listaDeDisciplinas) { %>
                 	  			<option value="<%= listaDeDisciplinas[i].codigo %>">
                     			<%- listaDeDisciplinas[i].codigo %> - 
@@ -50,7 +51,8 @@
 											Matrícula do professor(a)
 										</label>
 										<div class="controls">
-											<select class="form-control" name="matriculaProf" >
+											<select class="form-control" name="matriculaProf" required>
+												<option disabled selected value> -- Selecione uma opção -- </option>
                 				<% for (var i in listaDeProfessores) { %>
                   				<option value="<%= listaDeProfessores[i].matricula %>">
                  		  		<%= listaDeProfessores[i].matricula %> -

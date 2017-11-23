@@ -6,67 +6,98 @@
 	<% include ../partials/head %>
 </head>
 <body>
-	<div class="navbar"><% include ../partials/navbar %></div>
-	<div class="content">
-		<div class="container">
-			<div class="col-sm-6 col-sm-offset-3">
-				<h1><span class="fa fa-sign-in"></span> Cadastro de Usuário </h1>
+	<% include ../partials/navbar %>
+	<div class="container-fluid-full">
+			<div class="row-fluid">
+				<% include ../partials/sidebar_left %>
+				<div id="content" class="span10">
+						<ul class="breadcrumb">
+							<li>
+								<i class="icon-home"></i>
+								<a href="home">Home</a>
+								<i class="icon-angle-right"></i>
+							</li>
+							<li><a href="signup">Cadastro de Usuário</a></li>
+						</ul>
 
-				<!-- show any messages that come back with authentication -->
-				<% if (message.length > 0) { %>
-					<div class="alert alert-sucess">
-						<i class="icon-ok"></i>
-						<%= message %>
-					</div>
-				<% } %>
+						<!-- show any messages that come back with authentication -->
+						<% if (message.length > 0) { %>
+							<div class="alert alert-sucess">
+								<i class="icon-ok"></i>
+								<%= message %>
+							</div>
+						<% } %>
 
-				<!-- LOGIN FORM -->
-				<form action="/signup" method="post">				
-					<div class="form-group">
-						<label for="tipoUsuario" > Tipo de usuário: </label>
-						<select class="form-control" name="tipoUsuario" required> 
-							<option disabled selected value> -- Selecione uma opção -- </option>                     
-							<option value="aluno">Aluno</option>
-							<option value="professor">Professor</option>
-							<option value="administrador">Administrador</option>
-						</select>
-					</div>   
-					<div class="form-group">
-						<label>Nome</label>
-						<input type="text" class="form-control" name="nome" required>
-					</div>
-					<div class="form-group">
-						<label>Password</label>
-						<input type="password" class="form-control" name="password" required>
-					</div>
-					<div class="form-group form-check-inline">
-						<label>Sexo</label>
-						<label class="form-check-label">
-							<input class="form-check-input" type="radio" 
-								name="sexo" value="m" required> M
-						</label>
-					</div>
-					<div class="form-group form-check-inline">
-						<label class="form-check-label">
-							<input class="form-check-input" type="radio"
-								name="sexo" value="f" required> F
-						</label>
-					</div>
-					<div class="form-group">
-						<label>Matrícula</label>
-						<input type="text" class="form-control" name="matricula" required>
-					</div>
-					<div class="form-group">
-						<label>Email</label>
-						<input type="email" class="form-control" name="email" required>
-					</div>
-					<button type="submit" class="btn btn-warning btn-lg">Cadastrar</button>
-				</form>
-				
-				<h3><a href="home">Voltar à página principal</a></h3>
+						<!--Formulário-->
+						<div class="row-fluid sortable">
+							<div class="box span12">
+								<div class="box-header" data-original-title>
+									<h2><i class="halflings-icon white edit"></i>
+									<span class="break"></span>Formulário de Cadastro</h2>
+								</div>
+								<div class="box-content">	
+									<form action="/signup" method="post" class="form-horizontal">     
+										<fieldset>
+											<div class="control-group">
+												<label for="tipoUsuario" class="control-label">
+													Tipo de usuário: 
+												</label>											
+												<div class="controls">
+													<select class="form-control" name="tipoUsuario" required> 
+														<option disabled selected value> -- Selecione uma opção -- </option>                     
+														<option value="aluno">Aluno</option>
+														<option value="professor">Professor</option>
+														<option value="administrador">Administrador</option>
+													</select>
+												</div>
+											</div>
+											<div class="control-group">
+												<label class="control-label">Nome</label>
+												<div class="controls">
+													<input type="text" class="form-control" name="nome" required>
+												</div>
+											</div>
+											<div class="control-group">
+												<label class="control-label">Password</label>
+												<div class="controls">
+													<input type="password" class="form-control" name="password" required>
+												</div>
+											</div>
+											<div class="control-group form-check-inline">
+												<label class="control-label">Sexo</label>
+												<label class="form-check-label">
+													<input type="radio" class="form-check-input" 
+														name="sexo" value="m" required> M
+												</label>
+												<label class="form-check-label">
+													<input type="radio" class="form-check-input" 
+														name="sexo" value="f" required> F
+												</label>
+											</div>
+											<div class="control-group">
+												<label class="control-label">Matrícula</label>
+												<div class="controls">
+														<input type="text" class="form-control" name="matricula" required>
+												</div>
+											</div>
+											<div class="control-group">
+												<label class="control-label">Email</label>
+												<div class="controls">
+														<input type="email" class="form-control" name="email" required>
+												</div>
+											</div>
+											<div class="form-actions">			
+												<button type="submit" class="btn btn-warning btn-lg">Cadastrar</button>
+											</div>
+										</fieldset>
+									</form>
+								</div>
+							</div>
+						</div>						
+
+				</div>				
 			</div>
-		</div>
-	</div>
+	</div>			
 	<% include ../partials/footer %>
 	<% include ../partials/scripts %>
 </body>

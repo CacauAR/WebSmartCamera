@@ -20,35 +20,62 @@
 					<li><a href="matricular">Matricular</a></li>
 				</ul>
 
-				<!-- Cadastro de Disciplina FORM  - MELHORAR LAYOUT-->
-				<form action="/matricular" method="post">                
-					<div class="form-group">
-            <label for="codDisciplina" >Código Disciplina - ID Turma: </label>
-            <select class="form-control" name="codDisciplina">
-							<option disabled selected value> -- Selecione uma opção -- </option>
-              <% for (var i in listaDeTurmas) { %>
-								<option value="<%= listaDeTurmas[i].codigoDisciplina + " - "
-							  	+ listaDeTurmas[i].id %>">
-                  <%= listaDeTurmas[i].codigoDisciplina %> - 
-                  <%= listaDeTurmas[i].id %>
-                </option>
-              <% } %>		
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="codDisciplina" >Lista de Alunos: </label>
-            <select class="form-control" name="matriculaAluno">
-							<option disabled selected value> -- Selecione uma opção -- </option>
-              <% for (var i in listaDeAlunos) { %>
-                <option value="<%= listaDeAlunos[i].matricula %>">
-                  <%= listaDeAlunos[i].matricula %> -
-                  <%= listaDeAlunos[i].nome %>
-                </option>
-              <% } %>		
-            </select>
+				<!-- Cadastro de Turma -->
+				<div class="row-fluid sortable">
+					<div class="box span12">
+						<div class="box-header" data-original-title>
+							<h2><i class="halflings-icon white edit"></i>
+							<span class="break"></span>Matricular Alunos</h2>
+						</div>
+						<div class="box-content">			
+							<form action="/matricular" method="post" class="form-horizontal">       
+								<fieldset>         
+									<div class="control-group">
+										<label for="codDisciplina" class="control-label">
+											Código Disciplina - Turma: 
+										</label>
+										<div class="controls">
+            					<select class="form-control" name="codDisciplina">
+												<option disabled selected value> 
+													-- Selecione uma opção -- 
+												</option>
+              					<% for (var i in listaDeTurmas) { %>
+													<option value="<%= listaDeTurmas[i].codigoDisciplina + " - " + listaDeTurmas[i].id %>">
+                  				<%= listaDeTurmas[i].codigoDisciplina %> - 
+                  				<%= listaDeTurmas[i].id %>
+                					</option>
+              					<% } %>		
+											</select>
+										</div>
+									</div>
+									<div class="control-group">
+										<label for="codDisciplina" class="control-label">
+											Lista de Alunos: 
+										</label>
+										<div class="controls">
+            					<select class="form-control" name="matriculaAluno">
+												<option disabled selected value> 
+													-- Selecione uma opção -- 
+												</option>
+              					<% for (var i in listaDeAlunos) { %>
+                					<option value="<%= listaDeAlunos[i].matricula %>">
+                  				<%= listaDeAlunos[i].matricula %> -
+                  				<%= listaDeAlunos[i].nome %>
+               						</option>
+              					<% } %>		
+											</select>
+										</div>
+									</div>
+									<div class="form-actions">
+										<button type="submit" class="btn btn-warning btn-lg">
+											Matricular
+										</button>
+									</div>
+								</fieldset>
+							</form>
+						</div>
 					</div>
-					<button type="submit" class="btn btn-warning btn-lg">Matricular</button>
-				</form>
+				</div>
 
 				<!-- show any messages that come back with authentication -->
 				<% if (message == 1) { %>

@@ -1,5 +1,5 @@
 'use strict';
-const fs = require('fs');
+const fs = require('fs'); //File System module
 
 module.exports = function (express, passport) {
 
@@ -452,7 +452,8 @@ module.exports = function (express, passport) {
     res.render('pages/profile', {
       user: req.user, // get the user out of session and pass to template
       title: "WebSmartCamera - Perfil Usuário",
-      tipoUsuario : req.session.typeuser
+      tipoUsuario : req.session.typeuser,
+      turmasSessao : listaTurmasSessao
     });
   });
 

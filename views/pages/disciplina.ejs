@@ -22,7 +22,11 @@
 
 				<div class="row-fluid">
 					<div class="span12">					
-						<h1><%= disciplina.nomeDisciplina %> - Turma <%= disciplina.id %></h1>
+						<p class="center">
+							<button class="btn btn-primary" href="/lista_alunos_turma">Estudantes Matriculados</button>
+						</p>
+						<h1><%= disciplina.nomeDisciplina %> - Turma <%= turma %></h1>
+												
 						<div class="priority high"><span><h4>Aulas ao Vivo</h4></span></div>
 						<div class="task high">
 							<div class="desc">
@@ -69,9 +73,8 @@
 									</div>
 								</div>
 							</div>								
-						<% }); %>	
-						
-					</div>
+						<% }); %>							
+					</div>				
 				</div>
 				<br>
 
@@ -86,8 +89,7 @@
 								</div>
 								<div class="box-content">
 									<form class="form-horizontal" action="/upload_file" method="post"
-										enctype="multipart/form-data" onsubmit="return validateForm()"
-										name="myForm">
+										enctype="multipart/form-data" name="myForm">
 										<fieldset>
 											<div class="form-group form-actions">											
 												<label class="control-label">
@@ -95,11 +97,11 @@
 												</label>
 												<input type="text" name="nomeArquivo" value="" required>
 												<input type="hidden" name="codDisciplina" value='<%= disciplina.codigoDisciplina %>'>
-												<input type="hidden" name="idTurma" value=' <%= disciplina.id %>'>
+												<input type="hidden" name="idTurma" value=' <%= turma %>'>
 												<input id="fileUpload" class="form-control" type="file" 
 												name="uploaded_file" required accept=""/> &nbsp
 												<button id="btn-signup" type="submit" class="btn btn-info">
-													Upload File
+													Upload Arquivo
 												</button>									
 											</div> 
 										</fieldset>
@@ -115,7 +117,8 @@
 	<script>
 		function displayPDF() {
 				window.open('https://localhost:8080/public/uploaded_files/FIS203/CCP_horario_semestre_par_20172-v3.pdf');
-		}
+		}	
+	</script>
 	</script>
 	<% include ../partials/footer %>
 	<% include ../partials/scripts %>

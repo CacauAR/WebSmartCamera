@@ -15,7 +15,7 @@
 				<ul class="breadcrumb">
 					<li>
 						<i class="icon-home"></i>
-						<a href="home">Home</a>
+						<a href="#">Home</a>
 					</li>
 				</ul>
 				<div class="row-fluid sortable">
@@ -40,11 +40,11 @@
 									<% if (tipoUsuario == "aluno" || tipoUsuario == "professor") { %>
 										<% for (var i in lista) { %>
 											<tr>
-												<td>												
-													<a href="<%= lista[i].codigoDisciplina %>">
-													<%= lista[i].codigoDisciplina %> - <%= lista[i].nomeDisciplina %>
-													- Turma <%= lista[i].id %>
-													</a>
+												<td>										
+													<a href= <%="/"+ lista[i].codigoDisciplina +"?turma=" + lista[i].id %> >												
+														<%= lista[i].codigoDisciplina %> - <%= lista[i].nomeDisciplina %>
+														- Turma <%= lista[i].id %>
+													</a>																													
 												</td>
 											</tr>
 										<% } %>

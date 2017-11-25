@@ -91,7 +91,7 @@ module.exports = function(passport) {
 					return done(err);
 				if (rows.length) {
 					return done(null, false, req.flash('signupMessage', 
-						'That username is already taken.'));
+						'Essa matrícula já exite.'));
 				} else {
 					// if there is no user with that username
 					// create the user
@@ -166,7 +166,7 @@ module.exports = function(passport) {
 					return done(err);
 				if (!rows.length) {
 					return done(null, false, req.flash('loginMessage', 
-					'No user found.')); 
+					'Nenhum usuário com essa matrícula foi encontrado.')); 
 					// req.flash is the way to set flashdata using connect-flash
 				}
 

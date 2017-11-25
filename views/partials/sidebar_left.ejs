@@ -20,9 +20,11 @@
 						<ul>    
 							<% for (var i in turmasSessao)  { %>                       
 							<li>
-								<a class="submenu" href="<%= turmasSessao[i].codigoDisciplina %>">
+								<a class="submenu" href= <%="/"+ turmasSessao[i].codigoDisciplina+"?turma=" +
+									turmasSessao[i].id %> >			
 									<i class="icon-file-alt"></i>
-									<span class="hidden-tablet"><%= turmasSessao[i].nomeDisciplina %>
+									<span class="hidden-tablet"><%= turmasSessao[i].nomeDisciplina %> 
+									- <%= turmasSessao[i].id %>
 									</span>
 								</a>
 							</li>

@@ -59,11 +59,10 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.disciplinas_table + '` ( 
 
 connection.query('\
 CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.turmas_table + '` ( \
-    `id` INT NOT NULL AUTO_INCREMENT, \
+    `id` INT NOT NULL, \
     `matriculaProfessor` VARCHAR (7) NOT NULL, \
     `codigoDisciplina` CHAR(6) NOT NULL, \
         PRIMARY KEY (`id`, `codigoDisciplina`), \
-    UNIQUE INDEX `id_UNIQUE` (`id` ASC), \
     CONSTRAINT `matriculaProf` FOREIGN KEY (`matriculaProfessor`) \
         REFERENCES `' + dbconfig.database + '`.`'+ dbconfig.professores_table + '` (`matricula`) \
         ON DELETE CASCADE ON UPDATE CASCADE, \
@@ -78,7 +77,6 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.turma_aluno_table + '` ( 
     `matriculaAluno` VARCHAR (7) NOT NULL, \
     `codigoDisciplina` CHAR(6) NOT NULL, \
         PRIMARY KEY (`matriculaAluno`, `codigoDisciplina`), \
-    UNIQUE INDEX `id_UNIQUE` (`id` ASC), \
     CONSTRAINT `IDTurma` FOREIGN KEY (`id`) \
         REFERENCES `' + dbconfig.database + '`.`'+ dbconfig.turmas_table + '` (`id`)\
         ON DELETE CASCADE ON UPDATE CASCADE, \

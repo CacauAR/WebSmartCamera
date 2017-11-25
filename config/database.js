@@ -5,7 +5,7 @@ module.exports = {
         'user': 'root',
         'password': 'root'
     },
-	'database': 'testedatabase3',
+	'database': 'testedatabase',
     'admin_table': 'administrador',
     'alunos_table' : 'aluno',
     'professores_table' : 'professor',

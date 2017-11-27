@@ -49,51 +49,56 @@ module.exports = function (express, passport) {
     // se o usuário for professor, a página mostrará todas as turmas que este 
     // está cadastrado, caso seja aluno, todas as turmas que está matriculado.
     // a query será feita em tabelas diferentes para cada caso
-      req.session.turmaRecorrente = '50';
+    var table, tipoMatricula;
+    if (req.session.typeuser == "aluno"){
+      table = dbconfig.turma_aluno_table; tipoMatricula = "matriculaAluno";
+    } else if (req.session.typeuser == "professor"){
+      table = dbconfig.turmas_table; tipoMatricula = "matriculaProfessor";
+    } else if (req.session.typeuser == "administrador") {
+      res.render('pages/home', {
+        user: req.user,
+        title: "WebSmartCamera - Home",
+        message: req.flash('signupMessage'),      
+        tipoUsuario : req.session.typeuser  
+      });
+    }    
+    
+    var query =  "SELECT codigoDisciplina, id, nomeDisciplina FROM " + 
+    table + ", " + dbconfig.disciplinas_table + 
+    " WHERE codigo=codigoDisciplina AND " + tipoMatricula 
+    + "='" + req.user.matricula + "'";   
 
-      if (req.session.typeuser == "aluno"){
-        var query =  "SELECT codigoDisciplina, id, nomeDisciplina FROM " + 
-          dbconfig.turma_aluno_table + ", " + dbconfig.disciplinas_table + 
-          " WHERE codigo=codigoDisciplina AND matriculaAluno='" + 
-          req.user.matricula + "'";         
-        queryFile.data.selectSQLquery(query, function (result) {
-          listaTurmasSessao = result;
-          res.render('pages/home', {
-            user: req.user,
-            title: "WebSmartCamera - Home",
-            lista : result,
-            tipoUsuario : req.session.typeuser,
-            turmasSessao : listaTurmasSessao
-          }); 
-        });
-      }
-      else if (req.session.typeuser == "professor"){
-        var query =  "SELECT codigoDisciplina, id, nomeDisciplina FROM " + dbconfig.turmas_table + ", " +
-        dbconfig.disciplinas_table + " WHERE codigo=codigoDisciplina AND matriculaProfessor='" + req.user.matricula + "'"; 
-        queryFile.data.selectSQLquery(query, function (result) {
-        listaTurmasSessao = result;
-        console.log("turmas: ");
-        for (var i in result) {
-          console.log("codigo: " + result[i].codigoDisciplina + " Nome: " + 
-          result[i].nomeDisciplina + " ID: " + result[i].id );
-        }
-        
-        res.render('pages/home', {
-           user: req.user,
-            title: "WebSmartCamera - Home",
-            lista : result,
-            tipoUsuario : req.session.typeuser,
-            turmasSessao : listaTurmasSessao
-          }); 
-        });
-      }else{
-        res.render('pages/home', {
-          user: req.user,
-          title: "WebSmartCamera - Cadastro de Usuário",
-          message: req.flash('signupMessage'),      
-          tipoUsuario : req.session.typeuser  
-        });
-      }
+    queryFile.data.selectSQLquery(query, function (result) {
+      listaTurmasSessao = result;
+      res.render('pages/home', {
+        user: req.user,
+        title: "WebSmartCamera - Home",
+        lista : result,
+        tipoUsuario : req.session.typeuser,
+        turmasSessao : listaTurmasSessao
+      }); 
+    });
+
+  });
+
+  router.post('/lista_alunos', isLoggedIn, function (req, res){
+    var query =  "SELECT DISTINCT matricula, nome FROM " + dbconfig.turma_aluno_table +
+    ", " + dbconfig.alunos_table + " WHERE " + 
+    " codigoDisciplina='" + req.body.codDisciplina + "'" +
+    " AND id='" + req.body.idTurma + "'" + 
+    " AND matriculaAluno=matricula";
+    
+    queryFile.data.selectSQLquery(query, function (result) {
+      res.render('pages/lista_alunos_turma', {
+        user: req.user,
+        title: "WebSmartCamera - Lista Alunos",
+        disciplina : req.body.codDisciplina,
+        turma : req.body.idTurma,
+        listaAlunos : result,
+        tipoUsuario : req.session.typeuser,
+        turmasSessao : listaTurmasSessao
+      }); 
+    });
   });
 
   //=================================================

@@ -66,7 +66,7 @@ module.exports = function (express, passport) {
     var query =  "SELECT codigoDisciplina, id, nomeDisciplina FROM " + 
     table + ", " + dbconfig.disciplinas_table + 
     " WHERE codigo=codigoDisciplina AND " + tipoMatricula 
-    + "='" + req.user.matricula + "'";   
+    + "='" + req.user.matricula + "' ORDER BY codigoDisciplina";   
 
     queryFile.data.selectSQLquery(query, function (result) {
       listaTurmasSessao = result;
@@ -158,7 +158,7 @@ module.exports = function (express, passport) {
   // ================================================
   router.get('/lista_turmas', isLoggedIn, function (req, res) {
     if (req.session.typeuser == "administrador") { 
-      var query = "SELECT * FROM " + dbconfig.turmas_table; 
+      var query = "SELECT * FROM " + dbconfig.turmas_table + " ORDER BY codigoDisciplina"; 
       var query2 = "SELECT matricula, nome FROM " + dbconfig.professores_table;  
       var query3 = "SELECT * FROM " + dbconfig.disciplinas_table;
       var listaProfessores, listaDisciplinas;
@@ -188,7 +188,7 @@ module.exports = function (express, passport) {
   router.post('/lista_turmas', function (req, res) {
     // Seleciona o id máximo das turmas da disciplina
     var queryId = "SELECT MAX(id) FROM " + dbconfig.turmas_table + 
-    " WHERE CodigoDisciplina='" + req.body.codDisciplina + "'";
+    " WHERE codigoDisciplina='" + req.body.codDisciplina + "'";
     var novoId = 1;
     
     // Se alguma turma dessa disciplina já estiver cadastrada, 
@@ -214,7 +214,7 @@ module.exports = function (express, passport) {
   // ================================================
   router.get('/lista_professores', isLoggedIn, function (req, res) { 
     if (req.session.typeuser == "administrador") { 
-      var query =  "SELECT * FROM " + dbconfig.professores_table; 
+      var query =  "SELECT * FROM " + dbconfig.professores_table + " ORDER BY nome"; 
       queryFile.data.selectSQLquery(query, function (result) {
         res.render('pages/lista_professores', {
           user: req.user,

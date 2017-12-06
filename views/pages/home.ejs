@@ -41,8 +41,7 @@
 										<% for (var i in lista) { %>
 											<tr>
 												<td>										
-													<a href= <%="/"+ lista[i].codigoDisciplina +"?turma=" + lista[i].id %> >												
-														<%= lista[i].codigoDisciplina %> - <%= lista[i].nomeDisciplina %>
+													<a href= <%="/turma"+ lista[i].id + "_" + lista[i].codigoDisciplina%> >	<%= lista[i].codigoDisciplina %> - <%= lista[i].nomeDisciplina %>
 														- Turma <%= lista[i].id %>
 													</a>																													
 												</td>

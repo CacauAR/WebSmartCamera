@@ -37,18 +37,40 @@
 						<div class="priority high"><span><h4>Aulas ao Vivo</h4></span></div>
 						<div class="task high">
 							<div class="desc">
+
+
 								<% if (tipoUsuario == "professor") { %>
-									<div class="title"><a href="/video">Iniciar transmissão</div>
+
+									<div class="title"> <a href="#"  class= "btn btn-danger btn-setting">  Iniciar transmissão</a> </div>
+
+
 								<% } else if (tipoUsuario == "aluno") { %>
-									<div class="title"><a href="/video">Assistir</div>
+									<div class="title"><a href=<%="/video"+  turma + "_" + disciplina.codigoDisciplina %>>Assistir</div>
 								<% }%>
 							</div>
 						</div>
 
+				
+
+						<div class="modal hide fade" id="myModal">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">×</button>
+							<h3>Notificação</h3>
+						</div>
+						<div class="modal-body">
+							<p>Tem certeza que deseja iniciar uma tranmissão?</p>
+						</div>
+						<div class="modal-footer">
+							<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+							<a href=<%="/video"+  turma + "_" + disciplina.codigoDisciplina %> class="btn btn-primary">Sim</a>
+						</div>
+					</div>
+
+
 						<div class="priority medium"><span><h4>Aulas Online</h4></span></div>
 						<div class="task medium">
 							<div class="desc">
-								<div class="title"><a href= <%="/"+ disciplina.codigoDisciplina +"?aula=1"%> >
+								<div class="title"><a href="/aula" >
 									Aula 1 - Carga Elétrica e Campo Elétrico</a>
 								</div>
 								<div>Neque porro quisquam est qui, consectetur, adipisci velit</div>
@@ -72,6 +94,7 @@
 						</div>
 
 						<div class="priority low"><span><h3>Material Didático</h3></span></div>
+						
 						<% listaArquivos.forEach (file => { %>						
 							<div class="task low">
 								<div class="desc">
@@ -80,7 +103,7 @@
 									</div>
 								</div>
 							</div>								
-						<% }); %>							
+						<% }); %>						
 					</div>				
 				</div>
 				<br>

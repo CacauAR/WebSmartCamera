@@ -14,7 +14,7 @@
 			var socket = io();		
 			socket.emit('adduser', user);
 			
-			$('form').submit(function () {		
+			$('#chat').submit(function () {		
 				var msg = $('#mensagem').val(); 		
 				console.log("Mensagem: " + msg + " mandada por " + user );
 				socket.emit('chat message', {
@@ -30,7 +30,7 @@
 				console.log("tentou mandar mensagem");
 				var message_box = 
 						'<li class="left">' 
-						+ '<img class="avatar" alt="' + data.username + '" src="/public/img/user_upload_images/<%=user.image%>">'
+						+ '<img class="avatar" alt="' + data.username + '" src="/public/img/avatar.png">'
 						+ '<span class="message">'
 							+ '<span class="arrow"></span>'	
 							+ '<span class="from">' + data.username + '</span>'
@@ -74,7 +74,7 @@
 						</div>
 						<div class="box-content">
 							<canvas id="video-canvas"></canvas>
-							<script type="text/javascript" src="jsmpeg.min.js"></script>
+							<script type="text/javascript" src="/jsmpeg.min.js"></script>
 							<script type="text/javascript">
 								var canvas = document.getElementById('video-canvas');
 								var url = 'ws://'+document.location.hostname+':8082/';

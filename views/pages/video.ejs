@@ -30,7 +30,7 @@
 				console.log("tentou mandar mensagem");
 				var message_box = 
 						'<li class="left">' 
-						+ '<img class="avatar" alt="' + data.username + '" src="/public/img/avatar.png">'
+						+ '<img class="avatar" alt="' + data.username + '" src="/public/img/user_upload_images/<%=user.image%>">'
 						+ '<span class="message">'
 							+ '<span class="arrow"></span>'	
 							+ '<span class="from">' + data.username + '</span>'
@@ -83,11 +83,29 @@
 						</div>
 						<div align="right"> 
 							<% if (tipoUsuario == "professor") { %>
-								<button class="btn btn-warning" > Encerrar </button>
+								<button class= "btn btn-warning btn-setting"> Encerrar </button>
 							<% } %>
 						</div>
 					</div>
 					<!--end: VIDEO KIM EDISON -->
+
+
+					<div class="modal hide fade" id="myModal">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">×</button>
+							<h3>Notificação</h3>
+						</div>
+						<div class="modal-body">
+							<p>Salvar o vídeo?</p>
+						</div>
+						<div class="modal-footer">
+							<a href="/homeSim" id ="sim" class="btn btn-primary">Sim</a>
+							<a href="/homeNao" id="nao" class="btn btn-primary">Não</a>
+							<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+						</div>
+					</div>
+
+
 
 					<!-- start: CHAT -->
 					<div class="box black span6" onTablet="span6" 

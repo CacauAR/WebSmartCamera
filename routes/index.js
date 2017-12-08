@@ -1,5 +1,6 @@
 'use strict';
 const fs = require('fs'); //File System module
+var live = false;
 
 module.exports = function (express, passport) {
 
@@ -7,6 +8,8 @@ module.exports = function (express, passport) {
   var queryFile = require('../config/querys.js'); //load methods for sql querys  
   var router = express.Router(); //Create router instance
   var listaTurmasSessao = {}; //store list of turmas from session
+  var listaNotificacoesSessao = {}; //store list of notifications from newest files
+  var discVideo, turmaVideo, ffmpeg;
   
   // =================================================
   // SIGNUP ==========================================
@@ -61,25 +64,122 @@ module.exports = function (express, passport) {
         message: req.flash('signupMessage'),      
         tipoUsuario : req.session.typeuser  
       });
-    }    
+    }   
     
-    var query =  "SELECT codigoDisciplina, id, nomeDisciplina FROM " + 
-    table + ", " + dbconfig.disciplinas_table + 
-    " WHERE codigo=codigoDisciplina AND " + tipoMatricula 
-    + "='" + req.user.matricula + "' ORDER BY codigoDisciplina";   
+    if (req.session.typeuser == "aluno" || req.session.typeuser == "professor"){
+    
+	    var query =  "SELECT codigoDisciplina, id, nomeDisciplina FROM " + 
+	    table + ", " + dbconfig.disciplinas_table + 
+	    " WHERE codigo=codigoDisciplina AND " + tipoMatricula 
+	    + "='" + req.user.matricula + "' ORDER BY codigoDisciplina";  
+	    
+	    	// Seleciona os ultimos arquivos cadastrados nas disciplinas matriculadas
+	    var query2 =  "SELECT DISTINCT arquivo.id, arquivo.codigoDisciplina, titulo, timestamp " + 
+	    " FROM " + dbconfig.arquivos_table + "," + table +
+	    " WHERE " + tipoMatricula + "='" + req.user.matricula +
+	    "' AND arquivo.id = " + table + ".id  AND " +
+	    " arquivo.codigoDisciplina = " + table + ".codigoDisciplina " +
+	    "ORDER BY timestamp DESC LIMIT 5" + ";"; 
+	
+	    queryFile.data.selectSQLquery(query, function (result) {
+	      listaTurmasSessao = result;
 
-    queryFile.data.selectSQLquery(query, function (result) {
-      listaTurmasSessao = result;
-      res.render('pages/home', {
-        user: req.user,
-        title: "WebSmartCamera - Home",
-        lista : result,
-        tipoUsuario : req.session.typeuser,
-        turmasSessao : listaTurmasSessao
-      }); 
-    });
-
+	
+	      queryFile.data.selectSQLquery(query2, function(result2) {
+	        listaNotificacoesSessao = result2;
+	      
+	      res.render('pages/home', {
+	        user: req.user,
+	        title: "WebSmartCamera - Home",
+	        lista : result,
+	        tipoUsuario : req.session.typeuser,
+	        turmasSessao : listaTurmasSessao,            
+	        notificacoesSessao : listaNotificacoesSessao
+	      }); 
+	    });
+	    });
+    } 
   });
+  
+ 
+  router.get('/homeSim', isLoggedIn, function (req, res) { 
+	  
+	  if (ffmpeg){
+		  console.log("Estoy aqui Sim");
+		  ffmpeg.kill();
+	  }
+	  
+	  
+	  const fileFolder = './public/movies/';
+	    fs.stat(fileFolder + req.body.codDisciplina + "/", function (err, stats) {
+	      if (err) {
+	        // Directory doesn't exist or something.
+	        fs.mkdir(fileFolder + discVideo + "_" + turmaVideo); 
+	        console.log('Folder doesn\'t exist, so I made the folder ');
+	      } else  console.log('Does exist'); 
+	    });
+	    
+	  var newFile = fileFolder + discVideo +"_" + turmaVideo;
+	  
+	  var query = "SELECT titulo FROM " + dbconfig.arquivos_table + " WHERE caminho='" 
+	  	+ newFile + "' ORDER BY titulo DESC";
+	  
+	  
+	  
+	  queryFile.data.selectSQLquery(query, function (result) { 
+		  var novoId = 1;
+		  if (result.length > 0){
+		        novoId = (result[0]['titulo'].split("_"))[1] + 1;
+		        console.log("novoID " + novoId);
+		      }
+		  
+		  var query2 =  "INSERT INTO " + dbconfig.arquivos_table + 
+	      " (id, caminho, codigoDisciplina, titulo) VALUES (?,?,?,?)"; 
+		  var nome = ("aula_" + novoId);
+	      var params = [turmaVideo, newFile, discVideo, nome];
+
+	      queryFile.data.insertSQLquery(query2, params, function (result){     
+	    	  fs.rename('./recordings/novoVideo.ts', (newFile + "/aula_" + novoId), (err) => {
+	    		  if (err) throw err;
+	    		  fs.stat(newFile, (err, stats) => {
+	    		    if (err) throw err;
+	    		    console.log(`stats: ${JSON.stringify(stats)}`);
+	    		  });
+	    		});
+	    	  
+	    	  res.redirect('/home');
+	      }); 
+		  
+	  });
+	  
+	  //var newFile = fileFolder + discVideo +"_" + turmaVideo;
+	  
+	  
+  });
+  
+ router.get('/homeNao', isLoggedIn, function (req, res) {   
+	  if (ffmpeg){
+		  console.log("Estoy aqui nao");
+		  ffmpeg.kill();
+		  live = false;
+	  }
+	  
+	  fs.stat('/home/pi/Desktop/WebSmartCamera/recordings/novoVideo.ts', function (err, stats) {
+		   console.log(stats);//here we got all information of file in stats variable
+
+		   if (err) {
+		       return console.error(err);
+		   }
+
+		   fs.unlinkSync('/home/pi/Desktop/WebSmartCamera/recordings/novoVideo.ts' ,function(err){
+		        if(err) return console.log(err);
+		        console.log('file deleted successfully');
+		   });  
+		});
+	  res.redirect('/home');
+	  
+  });
+  
 
   router.post('/lista_alunos', isLoggedIn, function (req, res){
     var query =  "SELECT DISTINCT matricula, nome FROM " + dbconfig.turma_aluno_table +
@@ -96,7 +196,8 @@ module.exports = function (express, passport) {
         turma : req.body.idTurma,
         listaAlunos : result,
         tipoUsuario : req.session.typeuser,
-        turmasSessao : listaTurmasSessao
+        turmasSessao : listaTurmasSessao,
+        notificacoesSessao : listaNotificacoesSessao
       }); 
     });
   });
@@ -123,14 +224,14 @@ module.exports = function (express, passport) {
   router.post('/lista_disciplinas', function (req, res) {
 
     // cria diretório para upload de material da disciplina
-    const fileFolder = './public/uploaded_files/';
+    /*const fileFolder = './public/uploaded_files/';
     fs.stat(fileFolder + req.body.codDisciplina + "/", function (err, stats) {
       if (err) {
         // Directory doesn't exist or something.
         fs.mkdir(fileFolder + req.body.codDisciplina); 
         console.log('Folder doesn\'t exist, so I made the folder ' + req.body.codDisciplina);
       } else  console.log('Does exist'); 
-    });
+    });*/
 
     var query =  "INSERT INTO " + dbconfig.disciplinas_table + 
     " (codigo, nomeDisciplina) VALUES (?,?)"; 
@@ -198,9 +299,23 @@ module.exports = function (express, passport) {
         novoId = result[0]['MAX(id)'] + 1;
         console.log("novoID " + novoId);
       }
+      
+   // cria diretório para upload de material da disciplina
+      const fileFolder = './public/uploaded_files/';
+      fs.stat(fileFolder + req.body.codDisciplina +"_" + novoId + "/", function (err, stats) {
+        if (err) {
+          // Directory doesn't exist or something.
+          fs.mkdir(fileFolder + req.body.codDisciplina +"_" + novoId); 
+          console.log('Folder doesn\'t exist, so I made the folder ' + req.body.codDisciplina);
+        } else  console.log('Does exist'); 
+      });
+      
+      
       var query =  "INSERT INTO " + dbconfig.turmas_table + 
       " (id, matriculaProfessor, codigoDisciplina) VALUES (?,?,?)"; 
       var params = [novoId, req.body.matriculaProf, req.body.codDisciplina];
+      
+      
 
       queryFile.data.insertSQLquery(query, params, function (result){     
         req.flash('info', result);      
@@ -269,49 +384,6 @@ module.exports = function (express, passport) {
     });        
   });
 
-  // =================================================
-  // PAGINA PARA ASSISTIR AULA EM TRANSMISSAO ========
-  // =================================================
- /* router.get('/video', isLoggedIn, function (req, res) {
-      var query =  "SELECT codigoDisciplina, id FROM " + dbconfig.turmas_table +
-        " WHERE matriculaProfessor = '" + req.user.matricula + "';"; 
-      queryFile.data.selectSQLquery(query, function (result) {
-        res.render('pages/video', {
-          user: req.user,
-          title: "WebSmartCamera - Aula ao Vivo",
-          tipoUsuario : req.session.typeuser,
-          listaTurmas : result,
-          turmasSessao : listaTurmasSessao
-        });
-      });
-
-      
-    
-      /*var childProcess = require('child_process');
-
-        var spawn = childProcess.spawn;
-
-    //function spawnFfmpeg(exitCallback) {
-      var args = ['-f', 'v4l2', '-framerate', '25', '-video_size', '640x480', '-i', '/dev/video0', 
-      '-f', 'alsa', '-ar', '44100', '-ac', '1', '-i', 'hw:1,0', '-f', 'mpegts','-codec:v',
-      'mpeg1video', '-s', '640x480', '-b:v', '1000k', '-bf', '0', '-codec:a', 'mp2', '-b:a', '128k',
-      '-muxdelay', '0.001', 'http://localhost:8081'];
-
-      var ffmpeg = spawn('ffmpeg', args);
-
-      console.log('Spawning ffmpeg ' + args.join(' '));*/
-
-
-
-    /*}else{
-      res.render('pages/video', {
-        user: req.user,
-        title: "WebSmartCamera - Aula ao Vivo",
-        tipoUsuario : req.session.typeuser
-      });
-    }*/
-
-  //});
 
   // =================================================
   // Page to watch classes already recorded ==========
@@ -319,7 +391,7 @@ module.exports = function (express, passport) {
   router.get('/movies/:movieName', isLoggedIn, function (req, res) {
 
     const { movieName } = req.params;
-    const movieFile = `./movies/${movieName}`;
+    const movieFile = '/public/movies/'+ discVideo +"_" + turmaVideo + '/' + req.params.movieName;
 
     fs.stat(movieFile, (err, stats) => {
       if (err) {
@@ -337,7 +409,7 @@ module.exports = function (express, passport) {
         'Content-Range': `bytes ${start}-${end}/${size}`,
         'Accept-Ranges': 'bytes',
         'Content-Length': chunkSize,
-        'Content-Type': 'video/mp4'
+        'Content-Type': 'video/ts'
       });
       // É importante usar status 206 - Partial Content para o streaming funcionar
       res.status(206);
@@ -397,7 +469,8 @@ module.exports = function (express, passport) {
       user: req.user, // get the user out of session and pass to template
       title: "WebSmartCamera - Perfil Usuário",
       tipoUsuario : req.session.typeuser,
-      turmasSessao : listaTurmasSessao
+      turmasSessao : listaTurmasSessao,
+      notificacoesSessao : listaNotificacoesSessao
     });
   });
 
@@ -437,26 +510,27 @@ module.exports = function (express, passport) {
   router.post('/upload_file', function (req, res) {
     var file = req.files.uploaded_file;
     var file_name = file.name;
-    var codDis = req.body.codDisciplina;     
+    var codDis = req.body.codDisciplina;  
+    var idTurma = req.body.idTurma.trim();
 
     if (file.mimetype == 'application/pdf') {
-      file.mv('public/uploaded_files/' + codDis + '/'+ file.name, function(err) {
+      file.mv('public/uploaded_files/' + codDis + "_" + idTurma +'/'+ req.body.nomeArquivo, function(err) {
         if (err) return res.status(500).send(err);
         var query =  "INSERT INTO " + dbconfig.arquivos_table + 
         " (id,caminho,codigoDisciplina, titulo) VALUES (?,?,?,?)"; 
-        var params = [req.body.idTurma ,file.name, codDis,req.body.nomeArquivo];
+        var params = [req.body.idTurma ,('public/uploaded_files/' + codDis + "_" + idTurma), codDis,req.body.nomeArquivo];
         queryFile.data.insertSQLquery(query, params, function (result){     
-          res.redirect('/'+ codDis + '?turma=' + req.body.idTurma);
+          res.redirect('/turma'+ idTurma + '_' + codDis);
         });       
      });
-    } else res.redirect('/'+ codDis + '?turma=' + req.body.idTurma);
+    } else res.redirect('/turma'+ idTurma + '_' + codDis);
   });
   
   router.get('/turma' + ':courseId', isLoggedIn, function (req, res){
 	  
 	  var separado = req.params.courseId.split("_");
 	  console.log("courseId= " + separado[1]);
-      var filesList=0, disciplinaPagina;
+      var filesList=0, disciplinaPagina, videosLista = 0;
       var matriculaType, table;
       
       if (req.session.typeuser == 'professor') {
@@ -477,12 +551,33 @@ module.exports = function (express, passport) {
         console.log('id da turma: ' + result[0].id); 
     	  disciplinaPagina = result[0];
 
-        // Seleciona os arquivos cadastrados dessa disciplina (PDFs)
-        var query2 =  "SELECT * FROM " + dbconfig.arquivos_table + 
-        " WHERE id ='"+ separado[0] + "'  AND codigoDisciplina='" + separado[1] + "';";
-  
+        
+    	  var path = "public/uploaded_files/" + separado[1] + "_" + separado[0].trim();
+    	  
+    	  console.log(path);
+    	  
+    	  discVideo = separado[1];
+    	  turmaVideo = separado[0].trim();
+
+    	  // Seleciona os arquivos cadastrados dessa disciplina (PDFs)
+    	  var query2 =  "SELECT titulo, DATE_FORMAT( `timestamp` , '%d/%c/%Y %H:%i:%s' ) AS `timestamp` FROM "
+          + dbconfig.arquivos_table + " WHERE caminho='" + path + "' ORDER BY timestamp DESC";
+    	  
+    	  
+    	  var caminho = "public/movies/" + separado[1] + "_" + separado[0];
+    	  var queryVideos = "SELECT titulo, DATE_FORMAT( `timestamp` , '%d/%c/%Y %H:%i:%s' ) AS `timestamp` FROM " 
+    		  + dbconfig.arquivos_table + " WHERE caminho='" + caminho + "' ORDER BY timestamp DESC";
+    	  
+    	 
+    	  
+    	  
+      queryFile.data.selectSQLquery(queryVideos, function (result3) {
+    	  	videosLista = result3;
+    	  	
         queryFile.data.selectSQLquery(query2, function (result2) {
           filesList = result2;
+          
+          console.log("arquivos: " + result2[0]);
           console.log("fez a query dos arquivos");
           res.render('pages/disciplina', {
             user: req.user,
@@ -491,16 +586,21 @@ module.exports = function (express, passport) {
             disciplina: disciplinaPagina,
             tipoUsuario : req.session.typeuser,
             listaArquivos : filesList,
-            turmasSessao : listaTurmasSessao
+            aovivo : live,
+            listaVideos : videosLista,
+            turmasSessao : listaTurmasSessao,
+            notificacoesSessao : listaNotificacoesSessao            
           });
         });    
+      });
       });
     } );
   
   router.get('/video' + ':courseId' ,isLoggedIn, function (req, res){
 	  var separado = req.params.courseId.split("_");
 	  console.log("courseId= " + separado[1]);
-	  
+	  discVideo = separado[1];
+	  turmaVideo = separado[0];
 	  //console.log("lala2");
   	//console.log("Pediu pra assistir video " + req.query.video + " da matéria "); 
   	var query =  "SELECT codigoDisciplina, id FROM " + dbconfig.turmas_table +
@@ -513,7 +613,8 @@ module.exports = function (express, passport) {
         //video: req.query.video,
         tipoUsuario : req.session.typeuser,
         listaTurmas : result,
-        turmasSessao : listaTurmasSessao
+        turmasSessao : listaTurmasSessao,
+        notificacoesSessao : listaNotificacoesSessao
       });
       
       if(req.session.typeuser == "professor"){
@@ -528,18 +629,21 @@ module.exports = function (express, passport) {
         'mpeg1video', '-s', '640x480', '-b:v', '1000k', '-bf', '0', '-codec:a', 'mp2', '-b:a', '128k',
         '-muxdelay', '0.001', 'http://localhost:8081'];
 
-        var ffmpeg = spawn('ffmpeg', args);
+        ffmpeg = spawn('ffmpeg', args);
 
         console.log('Spawning ffmpeg ' + args.join(' '));
+        
+        live = true;
 
         }
     });
   
   });
   
-  router.get('/aula', isLoggedIn, function (req, res) {
-    var courseId = req.params.courseId;
-    console.log("Página " + courseId + " foi pedida.");
+  
+  router.get('/assistir/' + ":aula", isLoggedIn, function (req, res) {
+    var aulaNome = req.params.aula;
+    console.log("Página " + aulaNome + " foi pedida.");
         
     //cria página com o vídeo da disciplina pedida
     //if (req.query.aula != null){
@@ -547,9 +651,11 @@ module.exports = function (express, passport) {
       res.render('pages/assistir', {
         user: req.user,
         title: "WebSmartCamera - AULA TAL",
-        aula: 1,
+        aula : aulaNome,
+        disciplina : discVideo + "_" + turmaVideo, 
         tipoUsuario : req.session.typeuser,
-        turmasSessao : listaTurmasSessao
+        turmasSessao : listaTurmasSessao,
+        notificacoesSessao : listaNotificacoesSessao
       });
    // } 
   

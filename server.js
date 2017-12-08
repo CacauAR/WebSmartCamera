@@ -22,7 +22,7 @@ var fs = require('fs'),
 
 var STREAM_PORT = 8081,
 	WEBSOCKET_PORT = 8082,
-	RECORD_STREAM = false;
+	RECORD_STREAM = true;
 
 // ================================================================
 // configuration database
@@ -161,7 +161,7 @@ socketServer.broadcast = function(data) {
   socketServer.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
       client.send(data);
-      console.log(data);
+      //console.log(data);
     }
   });
 };
@@ -190,11 +190,10 @@ var streamServer = http.createServer( function(request, response) {
 
   // Record the stream to a local file?
   if (RECORD_STREAM) {
-    var path = 'recordings/' + Date.now() + '.ts';
+    var path = 'recordings/novoVideo.mp4';
     request.socket.recording = fs.createWriteStream(path);
   }
 }).listen(STREAM_PORT);
 
 console.log('Listening for incomming MPEG-TS Stream on http://127.0.0.1:'+STREAM_PORT);
 console.log('Awaiting WebSocket connections on ws://127.0.0.1:'+WEBSOCKET_PORT);
-

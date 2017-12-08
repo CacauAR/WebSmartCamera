@@ -94,10 +94,11 @@ CREATE TABLE `' + dbconfig.database + '`.`' + dbconfig.arquivos_table + '` ( \
     `caminho` VARCHAR (255) NOT NULL, \
     `codigoDisciplina` CHAR(6) NOT NULL, \
     `titulo` VARCHAR(255) NOT NULL, \
-        PRIMARY KEY (`titulo`), \
+    `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
+        PRIMARY KEY (`titulo`, id, codigoDisciplina), \
     CONSTRAINT `idT` FOREIGN KEY (`id`) \
-    REFERENCES `' + dbconfig.database + '`.`'+ dbconfig.turmas_table + '` (`id`)\
-    ON DELETE CASCADE ON UPDATE CASCADE, \
+        REFERENCES `' + dbconfig.database + '`.`'+ dbconfig.turmas_table + '` (`id`)\
+        ON DELETE CASCADE ON UPDATE CASCADE, \
     CONSTRAINT `codigoDisciFile` FOREIGN KEY (`codigoDisciplina`) \
         REFERENCES `' + dbconfig.database + '`.`'+ dbconfig.disciplinas_table + '` (`codigo`) \
         ON DELETE CASCADE ON UPDATE CASCADE \

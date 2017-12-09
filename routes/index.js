@@ -106,6 +106,7 @@ module.exports = function (express, passport) {
 	router.get('/homeSim', isLoggedIn, function (req, res) { 
 
 		ffmpeg.kill();
+		live = false;
 
 		const fileFolder = 'public/movies/';
 		fs.stat(fileFolder + discVideo +  "_" + turmaVideo + "/", function (err, stats) {
@@ -121,7 +122,6 @@ module.exports = function (express, passport) {
 
 		var query = "SELECT titulo FROM " + dbconfig.arquivos_table + " WHERE caminho='" 
 		+ newFile + "' ORDER BY titulo DESC";
-
 
 		queryFile.data.selectSQLquery(query, function (result) { 
 			var novoId = 1;
@@ -568,9 +568,8 @@ module.exports = function (express, passport) {
 					'mpeg1video', '-s', '640x480', '-b:v', '1000k', '-bf', '0', '-codec:a', 'mp2', '-b:a', '128k',
 					'-muxdelay', '0.001', 'http://localhost:8081'];
 
-				ffmpeg = spawn('ffmpeg', args);
+				ffmpeg = spawn('ffmpeg', args);			
 				live = true;
-
 				console.log('Spawning ffmpeg ' + args.join(' '));
 			}
 		});

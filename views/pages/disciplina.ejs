@@ -41,7 +41,7 @@
 							<% if (tipoUsuario == "aluno" && aovivo == "1") { %>
 
 							<div class="task high">
-								<div class="title"><a href=<%="/video"+  turma + "_" + disciplina.codigoDisciplina %>>Assistir</div>
+								<div class="title"><a href=<%="/video"+  turma + "_" + disciplina.codigoDisciplina %> class= "btn btn-danger ">Assistir</a></div>
 								
 							</div>
 
@@ -80,7 +80,7 @@
 							<div class="task medium">
 								<div class="desc">
 									<div class="title">
-										<a href="/assistir/<%= file.titulo %>" >
+										<a href="/public/movies/<%=disciplina.codigoDisciplina + "_" + turma%>/<%= file.titulo + ".ts"%>" download >
 											<%= file.titulo %> 
 										</a>
 									</div>

@@ -9,17 +9,20 @@
 	<script>			
 		var user = '<%= user.nome %>';
 		var data;
+		var image = '<%= user.image %>';
 
 		$(function () {					
 			var socket = io();		
 			socket.emit('adduser', user);
+			socket.emit('addimagem', image);
 			
 			$('#chat').submit(function () {		
 				var msg = $('#mensagem').val(); 		
 				console.log("Mensagem: " + msg + " mandada por " + user );
 				socket.emit('chat message', {
         	username: user,
-       		message: msg
+       		message: msg,
+       		image: image
     		});
 				/**Emit the message from user to everybody*/
 				$('#mensagem').val('');
@@ -30,7 +33,8 @@
 				console.log("tentou mandar mensagem");
 				var message_box = 
 						'<li class="left">' 
-						+ '<img class="avatar" alt="' + data.username + '" src="/public/img/user_upload_images/<%=user.image%>">'
+						+ '<img class="avatar" alt="' + data.username + '" src="/public/img/user_upload_images/' 
+						+ data.image +'">'
 						+ '<span class="message">'
 							+ '<span class="arrow"></span>'	
 							+ '<span class="from">' + data.username + '</span>'

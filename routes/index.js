@@ -104,19 +104,20 @@ module.exports = function (express, passport) {
  
   router.get('/homeSim', isLoggedIn, function (req, res) { 
 	  
-	  if (ffmpeg){
-		  console.log("Estoy aqui Sim");
+	  //if (ffmpeg){
+		//  console.log("Estoy aqui Sim");
 		  ffmpeg.kill();
-	  }
+	  //}
 	  
 	  
-	  const fileFolder = './public/movies/';
-	    fs.stat(fileFolder + req.body.codDisciplina + "/", function (err, stats) {
+	  const fileFolder = 'public/movies/';
+	    fs.stat(fileFolder + discVideo +  "_" + turmaVideo + "/", function (err, stats) {
 	      if (err) {
 	        // Directory doesn't exist or something.
 	        fs.mkdir(fileFolder + discVideo + "_" + turmaVideo); 
 	        console.log('Folder doesn\'t exist, so I made the folder ');
-	      } else  console.log('Does exist'); 
+	      } 
+	      else  console.log('Does exist'); 
 	    });
 	    
 	  var newFile = fileFolder + discVideo +"_" + turmaVideo;
@@ -129,7 +130,8 @@ module.exports = function (express, passport) {
 	  queryFile.data.selectSQLquery(query, function (result) { 
 		  var novoId = 1;
 		  if (result.length > 0){
-		        novoId = (result[0]['titulo'].split("_"))[1] + 1;
+		        var separado = (result[0]['titulo']).split("_");
+		        novoId = parseInt(separado[1]) + 1;
 		        console.log("novoID " + novoId);
 		      }
 		  
@@ -139,7 +141,7 @@ module.exports = function (express, passport) {
 	      var params = [turmaVideo, newFile, discVideo, nome];
 
 	      queryFile.data.insertSQLquery(query2, params, function (result){     
-	    	  fs.rename('./recordings/novoVideo.ts', (newFile + "/aula_" + novoId), (err) => {
+	    	  fs.rename('./recordings/novoVideo.ts', (newFile + "/aula_" + novoId + ".mp4"), (err) => {
 	    		  if (err) throw err;
 	    		  fs.stat(newFile, (err, stats) => {
 	    		    if (err) throw err;
@@ -158,11 +160,11 @@ module.exports = function (express, passport) {
   });
   
  router.get('/homeNao', isLoggedIn, function (req, res) {   
-	  if (ffmpeg){
-		  console.log("Estoy aqui nao");
+	  //if (ffmpeg){
+		//  console.log("Estoy aqui nao");
 		  ffmpeg.kill();
 		  live = false;
-	  }
+	  //}
 	  
 	  fs.stat('/home/pi/Desktop/WebSmartCamera/recordings/novoVideo.ts', function (err, stats) {
 		   console.log(stats);//here we got all information of file in stats variable
@@ -391,8 +393,8 @@ module.exports = function (express, passport) {
   router.get('/movies/:movieName', isLoggedIn, function (req, res) {
 
     const { movieName } = req.params;
-    const movieFile = '/public/movies/'+ discVideo +"_" + turmaVideo + '/' + req.params.movieName;
-
+    //const movieFile = '/public/movies/'+ discVideo +"_" + turmaVideo + '/' + req.params.movieName;
+    const movieFile = "/home/pi/Desktop/WebSmartCamera/public/movies/INF350_1/aula_4.ts";
     fs.stat(movieFile, (err, stats) => {
       if (err) {
         console.log(err);
@@ -658,7 +660,38 @@ module.exports = function (express, passport) {
         notificacoesSessao : listaNotificacoesSessao
       });
    // } 
-  
+      
+      const { movieName } = req.params;
+      //const movieFile = '/public/movies/'+ discVideo +"_" + turmaVideo + '/' + req.params.movieName;
+      const movieFile = "/home/pi/Desktop/WebSmartCamera/public/movies/INF350_1/aula_3.ts";
+      fs.stat(movieFile, (err, stats) => {
+        if (err) {
+          console.log(err);
+          return res.status(404).end('<h1>Movie Not found</h1>');
+        }
+        // Variáveis necessárias para montar o chunk header corretamente
+        const { range } = req.headers;
+        const { size } = stats;
+        const start = Number((range || '').replace(/bytes=/, '').split('-')[0]);
+        const end = size - 1;
+        const chunkSize = (end - start) + 1;
+        // Definindo headers de chunk
+        res.set({
+          'Content-Range': `bytes ${start}-${end}/${size}`,
+          'Accept-Ranges': 'bytes',
+          'Content-Length': chunkSize,
+          'Content-Type': 'video/ts'
+        });
+        // É importante usar status 206 - Partial Content para o streaming funcionar
+        res.status(206);
+        // Utilizando ReadStream do Node.js
+        // Ele vai ler um arquivo e enviá-lo em partes via stream.pipe()
+        const stream = fs.createReadStream(movieFile, { start, end });
+        stream.on('open', () => stream.pipe(res));
+        stream.on('error', (streamErr) => res.end(streamErr));
+      });
+      var app = express();
+      app.listen(3005, () => console.log('VideoFlix Server!'));
 
   });
 

@@ -24,6 +24,9 @@ var STREAM_PORT = 8081,
 	WEBSOCKET_PORT = 8082,
 	RECORD_STREAM = true;
 
+var dbconfig = require('./config/database'); //load database model
+var queryFile = require('./config/querys.js'); //load methods for sql querys  
+
 // ================================================================
 // configuration database
 // ================================================================
@@ -106,22 +109,26 @@ var server = app.listen(port, '0.0.0.0', function () {
 	console.log('Server listening on port ' + port + '…');
 });
 
+var image;
+
+
 // ================================================================
 // start chat server
 // ================================================================
 var io = require('socket.io').listen(server);
 // start listen with socket.io
 io.sockets.on('connection', function (socket) {
-	var addedUser = false;
+	var addedUser = false, addedImage = false;
 	//console.log('a user connected'); //@debug
 
 	// when the client emits 'new message', this listens and executes
 	socket.on('chat message', function (data) {
-		console.log(' message: -  ' + data.message + " - from " + socket.username);
+		console.log(' message: -  ' + data.message + " - from " + socket.username + " imagem " + socket.image);
 		// we tell the client to execute 'new message'
 		io.emit('chat message', {
 			username: socket.username,
-			message: data.message
+			message: data.message,
+			image: socket.image
 		});	
 	});
 
@@ -131,11 +138,27 @@ io.sockets.on('connection', function (socket) {
 		socket.username = username;
 		addedUser = true;
 		console.log("Usuário " + username + " conectou ao chat.");
+
+		/*var query =  "SELECT a.image, p.image FROM " + dbconfig.alunos_table + " a, " + dbconfig.professores_table +
+		" p WHERE a.nome = '" + username  + "' or p.nome='" + username + "'";
+
+		queryFile.data.selectSQLquery(query, function (result) {
+		  socket.image = result[0]['image'];
+		});*/
+	});
+	
+	socket.on('addimagem',function (image) {		
+		if (addedImage) return;
+		// we store the username in the socket session for this client
+		socket.image = image;
+		addedImage = true;
+		console.log("Imagem " + image + " conectou ao chat.");
 	});
 	
 	socket.on('disconnect', function () {
 		console.log('user disconnected'); //@debug
 		addedUser = false;
+		addedImage = false;
 	});
 });
 
@@ -190,7 +213,7 @@ var streamServer = http.createServer( function(request, response) {
 
   // Record the stream to a local file?
   if (RECORD_STREAM) {
-    var path = 'recordings/novoVideo.mp4';
+    var path = 'recordings/novoVideo.ts';
     request.socket.recording = fs.createWriteStream(path);
   }
 }).listen(STREAM_PORT);

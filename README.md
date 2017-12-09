@@ -4,13 +4,14 @@
 
 ## Instalação
 
-* Instale o node.js no raspberry pi
-* git clone git@github.com:CacauAR/WebSmartCamera.git
-* Instale o ffmpeg no raspberry pi
-* node scripts/create_database.js (Cria banco de dados mysql)
-* Dê start no seu servidor mysql local onde foi criado o banco de teste 
-* node server.js (em dev: npm start)
-* Visite em seu browser a página principal: `http://localhost:8080` 
+* `git clone https://github.com/CacauAR/WebSmartCamera.git`
+* Instale o ffmpeg;
+* Instale o Node.js e o npm;
+* Altere as informações em config/database.js para as suas configurações do Mysql;
+* Execute `node scripts/create_database.js` (Cria banco de dados);
+* `node server.js` (em dev: npm start)
+* Visite em seu browser a página principal, com o endereço do seu host, normalmente algo paracido com: `http://192.168.[...]:8080` 
+* Observação: Em routes/index.js linha 566, estão as informações relativas ao processo ffmpeg. Nossa câmera está em `/dev/video0` e o áudio é acessado via `hw:1,0`, se seus inputs forem diferentes, altere esses dados.
 
 ## Tutorial 
 

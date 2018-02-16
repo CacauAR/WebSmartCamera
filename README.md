@@ -8,19 +8,21 @@
 
 2) Depois clone o repositório: `git clone https://github.com/CacauAR/WebSmartCamera.git`;
 
-3) Instale o ffmpeg, garantindo a captura do áudio (Dicas aqui: https://raspberrypi.stackexchange.com/questions/70479/ffmpeg-unknown-input-format-alsa);
+3) Instale as dependências: npm install ;
 
-4) Instale o Node.js e o npm (Instruções aqui: https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions);
+4) Instale o ffmpeg, garantindo a captura do áudio (Dicas aqui: https://raspberrypi.stackexchange.com/questions/70479/ffmpeg-unknown-input-format-alsa);
 
-5) Instale o Mysql (Instruções aqui: https://www.linode.com/docs/databases/mysql/how-to-install-mysql-on-debian-8/);
+5) Instale o Node.js e o npm (Instruções aqui: https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions);
 
-6) Altere as informações em config/database.js para as suas configurações do Mysql;
+6) Instale o Mysql (Instruções aqui: https://www.linode.com/docs/databases/mysql/how-to-install-mysql-on-debian-8/);
 
-7) Execute `node scripts/create_database.js` (Cria o banco de dados);
+7) Altere as informações em config/database.js para as suas configurações do Mysql;
 
-8) Dê start: `node server.js` (em dev: npm start)
+8) Execute `node scripts/create_database.js` (Cria o banco de dados);
 
-9) Visite em seu browser a página principal com o endereço do seu host, normalmente algo parecido com: `http://192.168.[...]:8080` 
+9) Dê start: `node server.js` (em dev: npm start)
+
+10) Visite em seu browser a página principal com o endereço do seu host, normalmente algo parecido com: `http://192.168.[...]:8080` 
 
 * Observação: Em routes/index.js linha 566, estão as informações relativas ao processo ffmpeg. Nossa câmera está em `/dev/video0` e o áudio é acessado via `hw:1,0`, se seus inputs forem diferentes, altere esses dados.
 
